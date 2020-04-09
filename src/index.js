@@ -1,13 +1,15 @@
 import Phaser from 'phaser';
-import {InGame} from './in_game.js';
+import {
+  InGame
+} from './in_game.js';
 
 const config = {
   type: Phaser.CANVAS,
   parent: "game-page",
   backgroundColor: 0x75D5E3,
-  physics:{
+  physics: {
     default: 'matter',
-    matter:{
+    matter: {
       debug: {
         showBody: true,
         showStaticBody: true
@@ -15,7 +17,7 @@ const config = {
       debugBodyColor: 0x000000
     },
   },
-  scale:{
+  scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 720,
@@ -23,7 +25,7 @@ const config = {
   },
   scene: InGame,
   audio: {
-    disableWebAudio : true,
+    disableWebAudio: true,
   }
 };
 
