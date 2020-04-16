@@ -6,6 +6,9 @@ var rockPool
 var mountainGraphics;
 var mountainStart;
 var isWheelCollide;
+////////////////////////////////Testing
+var timedEvent;
+var Timertext;
 
 var carSpeed;
 
@@ -125,8 +128,16 @@ export class InGame extends Phaser.Scene {
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
+    Timertext = this.add.text(0,150,''+timedEvent,{
+      font: 'bold 42px Arial',
+      fill: 'white',
+      align: 'center'
+    }).setOrigin(0.5, 0.5);
+    Timertext.setScale(0.9);
+
     this.input.on("pointerdown", () => this.accelerateCar());
     this.input.on("pointerup", () => this.decelerateCar());
+    timedEvent = this.time.delayedCall(30000,this.restart(),[],this);
   }
 
   update(){
@@ -200,6 +211,9 @@ export class InGame extends Phaser.Scene {
     scoreInfoText.x = this.cameras.main.scrollX + 640;
     scoreText.x = this.cameras.main.scrollX + 640;
     scoreText.setText(''+scoreValue);
+
+    Timertext.setText('Timer: ' + timedEvent.getProgress().toString().substr(0,4));
+    Timertext.x = this.cameras.main.scrollX+this.game.config.width/2;
   }
 
   addPlayerCar(posX, posY){
@@ -284,6 +298,11 @@ export class InGame extends Phaser.Scene {
   decelerateCar(){
 
     isMoving = false;
+  }
+
+  restart()
+  {
+    console.log("loop");
   }
 
   generateGround(graphics, start){
@@ -446,4 +465,6 @@ export class InGame extends Phaser.Scene {
     let interpolation = (1 - Math.cos(delta * Math.PI)) * 0.5;
     return vFrom * (1 - interpolation) + vTo * interpolation;
   }
+
+  
 }
