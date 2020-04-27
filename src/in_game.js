@@ -230,10 +230,10 @@ export class InGame extends Phaser.Scene {
     let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 110, 20, {
       label: 'car',
     });
-    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 45, posY - 25, 20, 40, {
+    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 55, posY - 25, 20, 30, {
       label: 'car',
     });
-    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 45, posY - 25, 20, 40,{
+    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 25, 20, 30,{
       label: 'car',
     });
 
@@ -247,7 +247,7 @@ export class InGame extends Phaser.Scene {
     this.matter.world.add(carBody);
     //console.log(posX);
 
-    cargo = this.matter.add.rectangle(posX, posY - 2.5, 25, 25, {
+    cargo = this.matter.add.rectangle(posX, posY - 4, 25, 25, {
 
       label: 'cargo',
       friction: 1,
