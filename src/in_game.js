@@ -222,7 +222,7 @@ export class InGame extends Phaser.Scene {
 
       graphics.fillStyle(0x8b0000,1);
       graphics.fillRect(0, 20,100, 8);
-      if(timedEvent.getProgress()<1)
+      if(timedEvent.getProgress()<1&&graphics.scaleX!=0)
       {
       graphics.scaleX-=0.00148;
       console.log(graphics.scaleX);
