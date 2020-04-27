@@ -23,6 +23,7 @@ var distanceCheck;
 var distanceText;
 var distanceValue;
 var distanceInfoText;
+var graphics;
 
 var timeBar;
 
@@ -96,9 +97,11 @@ export class InGame extends Phaser.Scene {
     //   })
     // })
 
-    timeBar = this.add.sprite(0, 100, 'timebar').setOrigin(0, 0.5);
-    timeBar.scaleX = 3;
-    timeBar.scaleY = 2;
+    // timeBar = this.add.sprite(0, 100, 'timebar').setOrigin(0, 0.5);
+    // timeBar.scaleX = 3;
+    // timeBar.scaleY = 2;
+
+    graphics = this.add.graphics(0,100).setScale(3);
 
     distanceValue = 0;
     distanceInfoText = this.add.text(0, 30, 'DISTANCE', {
@@ -205,7 +208,7 @@ export class InGame extends Phaser.Scene {
     distanceText.x = this.cameras.main.scrollX + 80;
     distanceText.setText('' + distanceValue);
 
-    timeBar.x = this.cameras.main.scrollX + 220;
+    //timeBar.x = this.cameras.main.scrollX + 220;
     //timeBar.scaleX -= 0.002;
 
     scoreInfoText.x = this.cameras.main.scrollX + 640;
@@ -214,6 +217,12 @@ export class InGame extends Phaser.Scene {
 
     Timertext.setText('Timer: ' + timedEvent.getProgress().toString().substr(0,4));
     Timertext.x = this.cameras.main.scrollX+this.game.config.width/2;
+
+      graphics.x = this.cameras.main.scrollX+210;
+
+      graphics.fillStyle(0x8b0000,1);
+      graphics.fillRect(0, 20, 100 * timedEvent.getProgress(), 8);
+  
   }
 
   addPlayerCar(posX, posY){
@@ -221,10 +230,10 @@ export class InGame extends Phaser.Scene {
     let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 110, 20, {
       label: 'car',
     });
-    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 45, posY - 25, 20, 30, {
+    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 45, posY - 25, 20, 40, {
       label: 'car',
     });
-    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 45, posY - 25, 20, 30,{
+    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 45, posY - 25, 20, 40,{
       label: 'car',
     });
 
@@ -232,13 +241,13 @@ export class InGame extends Phaser.Scene {
 
       parts: [container_floor, container_left_wall, container_right_wall],
       friction: 1,
-      restitution: 0
+      restitution: 0,
     })
 
     this.matter.world.add(carBody);
     //console.log(posX);
 
-    cargo = this.matter.add.rectangle(posX, posY - 4, 25, 25, {
+    cargo = this.matter.add.rectangle(posX, posY - 2.5, 25, 25, {
 
       label: 'cargo',
       friction: 1,
