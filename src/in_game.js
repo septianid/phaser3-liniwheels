@@ -101,7 +101,7 @@ export class InGame extends Phaser.Scene {
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
 
-    graphics = this.add.graphics(0,100).setScale(3);
+    graphics = this.add.graphics(0,100).setScale(2.5);
 
     distanceValue = 0;
     distanceInfoText = this.add.text(0, 30, 'DISTANCE', {
@@ -221,7 +221,12 @@ export class InGame extends Phaser.Scene {
       graphics.x = this.cameras.main.scrollX+210;
 
       graphics.fillStyle(0x8b0000,1);
-      graphics.fillRect(0, 20, 100 * timedEvent.getProgress(), 8);
+      graphics.fillRect(0, 20,100, 8);
+      if(timedEvent.getProgress()<1)
+      {
+      graphics.scaleX-=0.00148;
+      console.log(graphics.scaleX);
+      }
   
   }
 
