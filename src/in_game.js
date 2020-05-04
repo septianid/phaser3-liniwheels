@@ -10,7 +10,10 @@ var isWheelCollide;
 var timedEvent;
 var Timertext;
 
+
 var carSpeed;
+var rodadepan;
+var rodabelakang;
 
 let carBody;
 let frontWheel;
@@ -55,6 +58,9 @@ export class InGame extends Phaser.Scene {
 
     this.load.image('time', './src/assets/time.png');
     this.load.image('timebar', './src/assets/time_bar.png');
+    this.load.image('crate','./src/assets/Crate.png');
+    this.load.image('Roda','./src/assets/roda.png');
+    this.load.image('Roda2','./src/assets/roda2.png');
   }
 
   create(){
@@ -62,8 +68,7 @@ export class InGame extends Phaser.Scene {
     bodyPool = [];
     rockPool= [];
     mountainGraphics = [];
-    distanceCheck = false;
-
+    distanceCheck = false;    
     mountainStart = new Phaser.Math.Vector2(-200, Math.random());
 
     for(let i = 0; i < gameOption.mountainTotal; i++){
@@ -252,29 +257,29 @@ export class InGame extends Phaser.Scene {
     this.matter.world.add(carBody);
     //console.log(posX);
 
-    cargo = this.matter.add.rectangle(posX, posY - 4, 25, 25, {
+    cargo = this.matter.add.sprite(posX, posY - 4, 'crate', 0, {
 
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    })
+    }).setScale(0.08);
 
-    frontWheel = this.matter.add.circle(posX + 40, posY + 25, 20, {
+    frontWheel = this.matter.add.sprite(posX + 40, posY + 25,'Roda', {
 
       label: 'wheel',
       friction: 0.5,
       restitution: 0
-    });
+    }).setScale(0.5).setCircle(20);
     //console.log(frontWheel);
-
-    rearWheel = this.matter.add.circle(posX - 40, posY + 25, 20, {
+    
+    rearWheel = this.matter.add.sprite(posX - 40, posY + 25,'Roda2', {
 
       label: 'wheel',
       friction: 0.5,
       restitution: 0
-    });
+    }).setScale(0.5).setCircle(20);
     //console.log(rearWheel);
-
+  
     this.matter.add.constraint(carBody, frontWheel, 30, 0, {
       pointA:{
         x: 35,
