@@ -8,7 +8,7 @@ var mountainStart;
 var isWheelCollide;
 ////////////////////////////////Testing
 var timedEvent;
-var Timertext;
+var timerText;
 
 
 var carSpeed;
@@ -41,7 +41,7 @@ var gameOption = {
   slopePerMountain: 6,
   startHeigthTerrain: 0.5,
   amplitude: 100,
-  speed: 0.02,
+  speed: 0.5,
   stoneRatio: 5
 }
 
@@ -60,7 +60,6 @@ export class InGame extends Phaser.Scene {
     this.load.image('timebar', './src/assets/time_bar.png');
     this.load.image('crate','./src/assets/Crate.png');
     this.load.image('Roda','./src/assets/roda.png');
-    this.load.image('Roda2','./src/assets/roda2.png');
   }
 
   create(){
@@ -68,7 +67,7 @@ export class InGame extends Phaser.Scene {
     bodyPool = [];
     rockPool= [];
     mountainGraphics = [];
-    distanceCheck = false;    
+    distanceCheck = false;
     mountainStart = new Phaser.Math.Vector2(-200, Math.random());
 
     for(let i = 0; i < gameOption.mountainTotal; i++){
@@ -136,12 +135,12 @@ export class InGame extends Phaser.Scene {
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
-    Timertext = this.add.text(0,150,''+timedEvent,{
+    timerText = this.add.text(0,150,''+timedEvent,{
       font: 'bold 42px Arial',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
-    Timertext.setScale(0.9);
+    timerText.setScale(0.9);
 
     this.input.on("pointerdown", () => this.accelerateCar());
     this.input.on("pointerup", () => this.decelerateCar());
@@ -155,11 +154,12 @@ export class InGame extends Phaser.Scene {
     if(isMoving){
 
       let carVelocity;
-      carVelocity = frontWheel.angularSpeed + gameOption.speed;
+      carVelocity = frontWheel.body.angularSpeed + gameOption.speed;
+      //console.log(frontWheel.body.angularSpeed);
       carVelocity = Phaser.Math.Clamp(carVelocity, 0, 0.7);
 
-      this.matter.body.setAngularVelocity(rearWheel, carVelocity);
-      this.matter.body.setAngularVelocity(frontWheel, carVelocity);
+      this.matter.body.setAngularVelocity(rearWheel.body, carVelocity);
+      this.matter.body.setAngularVelocity(frontWheel.body, carVelocity);
       //console.log(frontWheel.angularSpeed);
       //console.log(rearWheel.angularSpeed);
     }
@@ -220,8 +220,8 @@ export class InGame extends Phaser.Scene {
     scoreText.x = this.cameras.main.scrollX + 640;
     scoreText.setText(''+scoreValue);
 
-    Timertext.setText('Timer: ' + timedEvent.getProgress().toString().substr(0,4));
-    Timertext.x = this.cameras.main.scrollX+this.game.config.width/2;
+    timerText.setText('Timer: ' + timedEvent.getProgress().toString().substr(0,4));
+    timerText.x = this.cameras.main.scrollX+this.game.config.width/2;
 
       graphics.x = this.cameras.main.scrollX+210;
 
@@ -230,9 +230,9 @@ export class InGame extends Phaser.Scene {
       if(timedEvent.getProgress()<1&&graphics.scaleX>0)
       {
       graphics.scaleX-=0.00143;
-      console.log(graphics.scaleX);
+      //console.log(graphics.scaleX);
       }
-  
+
   }
 
   addPlayerCar(posX, posY){
@@ -264,22 +264,21 @@ export class InGame extends Phaser.Scene {
       restitution: 0,
     }).setScale(0.08);
 
-    frontWheel = this.matter.add.sprite(posX + 40, posY + 25,'Roda', {
 
+    frontWheel = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
+    frontWheel.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
-      restitution: 0
-    }).setScale(0.5).setCircle(20);
-    //console.log(frontWheel);
-    
-    rearWheel = this.matter.add.sprite(posX - 40, posY + 25,'Roda2', {
-
+      restitution: 0,
+    })
+    rearWheel = this.matter.add.sprite(posX - 40, posY + 25, 'Roda').setScale(0.37);
+    rearWheel.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
-      restitution: 0
-    }).setScale(0.5).setCircle(20);
+      restitution: 0,
+    })
     //console.log(rearWheel);
-  
+
     this.matter.add.constraint(carBody, frontWheel, 30, 0, {
       pointA:{
         x: 35,
@@ -485,5 +484,5 @@ export class InGame extends Phaser.Scene {
     return vFrom * (1 - interpolation) + vTo * interpolation;
   }
 
-  
+
 }
