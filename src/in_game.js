@@ -26,7 +26,7 @@ var distanceCheck;
 var distanceText;
 var distanceValue;
 var distanceInfoText;
-var graphics;
+var timeGraphics;
 
 var timeBar;
 
@@ -105,7 +105,10 @@ export class InGame extends Phaser.Scene {
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
 
-    graphics = this.add.graphics(0,100).setScale(2.5);
+    timeGraphics = this.add.graphics().setScale(2.5);
+    timeGraphics.setOrigin
+    timeGraphics.fillStyle(0x8b0000, 1);
+    timeGraphics.fillRect(10, 20, 100, 8);
 
     distanceValue = 0;
     distanceInfoText = this.add.text(0, 30, 'DISTANCE', {
@@ -221,18 +224,14 @@ export class InGame extends Phaser.Scene {
     scoreText.setText(''+scoreValue);
 
     timerText.setText('Timer: ' + timedEvent.getProgress().toString().substr(0,4));
-    timerText.x = this.cameras.main.scrollX+this.game.config.width/2;
+    timerText.x = this.cameras.main.scrollX + this.game.config.width/2;
 
-      graphics.x = this.cameras.main.scrollX+210;
+    timeGraphics.x = this.cameras.main.scrollX + 210;
 
-      graphics.fillStyle(0x8b0000,1);
-      graphics.fillRect(0, 20,100, 8);
-      if(timedEvent.getProgress()<1&&graphics.scaleX>0)
-      {
-      graphics.scaleX-=0.00143;
-      //console.log(graphics.scaleX);
-      }
+    if(timedEvent.getProgress() < 1 && timeGraphics.scaleX > 0){
 
+      timeGraphics.scaleX -= 0.0014;
+    }
   }
 
   addPlayerCar(posX, posY){
@@ -318,9 +317,8 @@ export class InGame extends Phaser.Scene {
     isMoving = false;
   }
 
-  restart()
-  {
-    console.log("loop");
+  restart(){
+    //console.log("loop");
   }
 
   generateGround(graphics, start){
