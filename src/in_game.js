@@ -1,38 +1,34 @@
 import Phaser from 'phaser';
 
 var cargo;
-var bodyPool;
-var rockPool
-var mountainGraphics;
-var mountainStart;
+var bodyStore;
+var rockStore;
+//////////////////////////////// Storage untuk penyimpanan body dan Rock untuk random generated assets//
+var terrainGraphics;
+var startLine;
 var isWheelCollide;
-////////////////////////////////Testing
-var timedEvent;
-var timerText;
-
-
-var carSpeed;
-var rodadepan;
-var rodabelakang;
-
-let carBody;
-let frontWheel;
-let rearWheel;
-
+/////////////////////////////// Variable Generate Mountain//
+var tresholdTime;
+var timeUi;
+/////////////////////////////// Variable Time bar yang digunakan untuk set Waktu//
+let cartStructure;
+let cartwheelFront;
+let cartwheelRear;
+////////////////////////////// Cart Structure generation
 let bodies;
 var isMoving;
 
-var distanceCheck;
-var distanceText;
-var distanceValue;
-var distanceInfoText;
-var timeGraphics;
+var distanceTreshold;
+var distanceUi;
+var tresholdValue;
+var distanceConvertString;
+var graphics;
 
-var timeBar;
+//var timeBar;
 
-var scoreText;
-var scoreValue;
-var scoreInfoText;
+var scoreUi;
+var valueScore;
+var infoTextui;
 
 var gameOption = {
 
@@ -43,7 +39,7 @@ var gameOption = {
   amplitude: 100,
   speed: 0.5,
   stoneRatio: 5
-}
+};
 
 var simplify = require('simplify-js');
 
@@ -64,21 +60,21 @@ export class InGame extends Phaser.Scene {
 
   create(){
 
-    bodyPool = [];
-    rockPool= [];
-    mountainGraphics = [];
-    distanceCheck = false;
-    mountainStart = new Phaser.Math.Vector2(-200, Math.random());
+    bodyStore = [];
+    rockStore= [];
+    terrainGraphics = [];
+    distanceTreshold = false;
+    startLine = new Phaser.Math.Vector2(-200, Math.random());
 
     for(let i = 0; i < gameOption.mountainTotal; i++){
 
-      mountainGraphics[i] =  this.add.graphics();
-      mountainStart = this.generateGround(mountainGraphics[i], mountainStart);
+      terrainGraphics[i] =  this.add.graphics();
+      startLine = this.terrainGeneration(terrainGraphics[i], startLine);
     }
 
     isMoving = false;
 
-    this.addPlayerCar(250, 400);
+    this.generatePlayercar(250, 400);
 
     this.matter.world.on('collisionstart', (event, objectA, objectB) => {
 
@@ -105,75 +101,72 @@ export class InGame extends Phaser.Scene {
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
 
-    timeGraphics = this.add.graphics().setScale(2.5);
-    timeGraphics.setOrigin
-    timeGraphics.fillStyle(0x8b0000, 1);
-    timeGraphics.fillRect(10, 20, 100, 8);
+    graphics = this.add.graphics(0,100).setScale(2.5);
 
-    distanceValue = 0;
-    distanceInfoText = this.add.text(0, 30, 'DISTANCE', {
+    tresholdValue = 0;
+    distanceConvertString = this.add.text(0, 30, 'DISTANCE', {
       font: 'bold 26px Arial',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
-    distanceText = this.add.text(0, 70, '0', {
+    distanceUi = this.add.text(0, 70, '0', {
       font: 'bold 42px Arial',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
-    scoreValue = 0;
-    scoreInfoText = this.add.text(0, 30, 'SCORE' ,{
+    valueScore = 0;
+    infoTextui = this.add.text(0, 30, 'SCORE' ,{
 
       font: 'bold 26px Arial',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
-    scoreText = this.add.text(0, 70, ''+scoreValue, {
+    scoreUi = this.add.text(0, 70, ''+valueScore, {
 
       font: 'bold 42px Arial',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
-    timerText = this.add.text(0,150,''+timedEvent,{
+    timeUi = this.add.text(0,150,''+tresholdTime,{
       font: 'bold 42px Arial',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
-    timerText.setScale(0.9);
+    timeUi.setScale(0.9);
 
     this.input.on("pointerdown", () => this.accelerateCar());
     this.input.on("pointerup", () => this.decelerateCar());
-    timedEvent = this.time.delayedCall(30000,this.restart(),[],this);
+    tresholdTime = this.time.delayedCall(30000,this.restart(),[],this);
   }
 
   update(){
 
-    this.cameras.main.scrollX = carBody.position.x - this.game.config.width / 8;
+    this.cameras.main.scrollX = cartStructure.position.x - this.game.config.width / 8;
 
     if(isMoving){
 
       let carVelocity;
-      carVelocity = frontWheel.body.angularSpeed + gameOption.speed;
+      carVelocity = cartwheelFront.body.angularSpeed + gameOption.speed;
       //console.log(frontWheel.body.angularSpeed);
       carVelocity = Phaser.Math.Clamp(carVelocity, 0, 0.7);
 
-      this.matter.body.setAngularVelocity(rearWheel.body, carVelocity);
-      this.matter.body.setAngularVelocity(frontWheel.body, carVelocity);
+      this.matter.body.setAngularVelocity(cartwheelRear.body, carVelocity);
+      this.matter.body.setAngularVelocity(cartwheelFront.body, carVelocity);
       //console.log(frontWheel.angularSpeed);
       //console.log(rearWheel.angularSpeed);
     }
 
-    mountainGraphics.forEach((graphics) => {
+    terrainGraphics.forEach((graphics) => {
 
       if(this.cameras.main.scrollX > graphics.x + graphics.width + 10){
 
-        mountainStart = this.generateGround(graphics, mountainStart);
+        startLine = this.terrainGeneration(graphics, startLine);
       }
-    })
+    });
 
     bodies = this.matter.world.localWorld.bodies;
 
@@ -183,58 +176,62 @@ export class InGame extends Phaser.Scene {
 
         switch (body.label) {
           case 'ground':
-            bodyPool.push(body);
+            bodyStore.push(body);
             break;
           case 'rock':
-            rockPool.push(body);
+            rockStore.push(body);
             break;
         }
 
         body.inPool = true;
       }
-    })
+    });
 
-    if(distanceValue % 30 == 0 && distanceValue != 0){
+    if(tresholdValue % 30 == 0 && tresholdValue != 0){
 
-      if (distanceCheck === false) {
+      if (distanceTreshold === false) {
 
-        distanceCheck = true
-        scoreValue += 1;
+        distanceTreshold = true;
+        valueScore += 1;
       }
       else {
 
-        scoreValue += 0;
+        valueScore += 0;
       }
     }
     else {
 
-      distanceCheck = false;
+      distanceTreshold = false;
     }
 
-    distanceValue = Math.floor(this.cameras.main.scrollX / 100)
-    distanceInfoText.x = this.cameras.main.scrollX + 80;
-    distanceText.x = this.cameras.main.scrollX + 80;
-    distanceText.setText('' + distanceValue);
+    tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
+    distanceConvertString.x = this.cameras.main.scrollX + 80;
+    distanceUi.x = this.cameras.main.scrollX + 80;
+    distanceUi.setText('' + tresholdValue);
 
     //timeBar.x = this.cameras.main.scrollX + 220;
     //timeBar.scaleX -= 0.002;
 
-    scoreInfoText.x = this.cameras.main.scrollX + 640;
-    scoreText.x = this.cameras.main.scrollX + 640;
-    scoreText.setText(''+scoreValue);
+    infoTextui.x = this.cameras.main.scrollX + 640;
+    scoreUi.x = this.cameras.main.scrollX + 640;
+    scoreUi.setText(''+valueScore);
 
-    timerText.setText('Timer: ' + timedEvent.getProgress().toString().substr(0,4));
-    timerText.x = this.cameras.main.scrollX + this.game.config.width/2;
+    timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
+    timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
-    timeGraphics.x = this.cameras.main.scrollX + 210;
+      graphics.x = this.cameras.main.scrollX+210;
 
-    if(timedEvent.getProgress() < 1 && timeGraphics.scaleX > 0){
+      graphics.fillStyle(0x8b0000,1);
+      graphics.fillRect(0, 20,100, 8);
+      if(tresholdTime.getProgress()<1&&graphics.scaleX>0)
+      {
+      graphics.scaleX-=0.00143;
+      //console.log(graphics.scaleX);
+      }
 
-      timeGraphics.scaleX -= 0.0014;
-    }
   }
 
-  addPlayerCar(posX, posY){
+  generatePlayercar(posX, posY){
 
     let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 110, 20, {
       label: 'car',
@@ -246,14 +243,14 @@ export class InGame extends Phaser.Scene {
       label: 'car',
     });
 
-    carBody = Phaser.Physics.Matter.Matter.Body.create({
+    cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
       parts: [container_floor, container_left_wall, container_right_wall],
       friction: 1,
       restitution: 0,
-    })
+    });
 
-    this.matter.world.add(carBody);
+    this.matter.world.add(cartStructure);
     //console.log(posX);
 
     cargo = this.matter.add.sprite(posX, posY - 4, 'crate', 0, {
@@ -264,47 +261,47 @@ export class InGame extends Phaser.Scene {
     }).setScale(0.08);
 
 
-    frontWheel = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
-    frontWheel.setCircle(20, {
+    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
+    cartwheelFront.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
       restitution: 0,
-    })
-    rearWheel = this.matter.add.sprite(posX - 40, posY + 25, 'Roda').setScale(0.37);
-    rearWheel.setCircle(20, {
+    });
+    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 25, 'Roda').setScale(0.37);
+    cartwheelRear.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
       restitution: 0,
-    })
+    });
     //console.log(rearWheel);
 
-    this.matter.add.constraint(carBody, frontWheel, 30, 0, {
+    this.matter.add.constraint(cartStructure, cartwheelFront, 30, 0, {
       pointA:{
         x: 35,
         y: 10
       }
     });
 
-    this.matter.add.constraint(carBody, frontWheel, 30, 0, {
+    this.matter.add.constraint(cartStructure, cartwheelFront, 30, 0, {
       pointA:{
         x: 50,
         y: 10
       }
-    })
+    });
 
-    this.matter.add.constraint(carBody, rearWheel, 30, 0, {
+    this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
       pointA:{
         x: -35,
         y: 10
       }
     });
 
-    this.matter.add.constraint(carBody, rearWheel, 30, 0, {
+    this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
       pointA:{
         x: -50,
         y: 10
       }
-    })
+    });
   }
 
   accelerateCar(){
@@ -317,11 +314,12 @@ export class InGame extends Phaser.Scene {
     isMoving = false;
   }
 
-  restart(){
-    //console.log("loop");
+  restart()
+  {
+    console.log("loop");
   }
 
-  generateGround(graphics, start){
+  terrainGeneration(graphics, start){
 
     //console.log(start);
 
@@ -378,8 +376,8 @@ export class InGame extends Phaser.Scene {
     graphics.beginPath();
     simpleSlope.forEach((point) => {
 
-      graphics.lineTo(point.x, point.y)
-    })
+      graphics.lineTo(point.x, point.y);
+    });
     graphics.lineTo(pointX, this.game.config.height);
     graphics.lineTo(0, this.game.config.height);
     graphics.closePath();
@@ -390,7 +388,7 @@ export class InGame extends Phaser.Scene {
     simpleSlope.forEach((point) => {
 
       graphics.lineTo(point.x, point.y);
-    })
+    });
     graphics.strokePath();
 
     for(let i = 1; i < simpleSlope.length; i++){
@@ -401,7 +399,7 @@ export class InGame extends Phaser.Scene {
       let center = Phaser.Geom.Line.GetPoint(line, 0.5);
       let angle = Phaser.Geom.Line.Angle(line);
 
-      if(bodyPool.length == 0){
+      if(bodyStore.length == 0){
 
         body = this.matter.add.rectangle(center.x + start.x, center.y, distance, 10, {
 
@@ -410,18 +408,18 @@ export class InGame extends Phaser.Scene {
           angle: angle,
           friction: 1,
           restitution: 0
-        })
+        });
 
         body.inPool = false;
       }
       else {
 
-        body = bodyPool.shift();
+        body = bodyStore.shift();
         body.inPool = false;
         this.matter.body.setPosition(body, {
           x: center.x + start.x,
           y: center.y
-        })
+        });
 
         let length = body.area / 10;
         this.matter.body.setAngle(body, 0);
@@ -436,12 +434,12 @@ export class InGame extends Phaser.Scene {
         let size = Phaser.Math.Between(20, 30);
         let depth = Phaser.Math.Between(0, size / 2);
         let rockX = center.x + start.x + depth * Math.cos(angle + Math.PI / 2);
-        let rockY = center.y + depth * Math.sin(angle + Math.PI / 2)
+        let rockY = center.y + depth * Math.sin(angle + Math.PI / 2);
 
         graphics.fillStyle(0x6b6b6b, 1);
         graphics.fillCircle(rockX - start.x, rockY, size);
 
-        if(rockPool.length == 0 ){
+        if(rockStore.length == 0 ){
 
           rock = this.matter.add.circle(rockX, rockY, size, {
 
@@ -453,21 +451,21 @@ export class InGame extends Phaser.Scene {
             collionFilter:{
               category: 2
             }
-          })
+          });
 
           rock.inPool = false;
         }
 
         else {
 
-          rock = rockPool.shift();
-          this.matter.body.scale(rock, size / rock.circleRadius, size / rock.circleRadius)
+          rock = rockStore.shift();
+          this.matter.body.scale(rock, size / rock.circleRadius, size / rock.circleRadius);
           this.matter.body.setPosition(rock, {
             x: rockX,
             y: rockY
-          })
+          });
 
-          rock.inPool = false
+          rock.inPool = false;
         }
       }
     }
