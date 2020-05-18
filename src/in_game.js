@@ -203,6 +203,8 @@ export class InGame extends Phaser.Scene {
 
       distanceTreshold = false;
     }
+    
+    this.checkpoint(distanceTreshold);
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
     distanceConvertString.x = this.cameras.main.scrollX + 80;
@@ -317,6 +319,14 @@ export class InGame extends Phaser.Scene {
   restart()
   {
     console.log("loop");
+  }
+
+  checkpoint(distanceTreshold)
+  {
+    if(tresholdValue%30==0&&tresholdValue!=0)
+    {
+      console.log("Testing Berhasil");
+    }
   }
 
   terrainGeneration(graphics, start){
