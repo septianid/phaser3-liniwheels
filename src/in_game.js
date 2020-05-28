@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 var cargo;
 var bodyStore;
 var rockStore;
+var CheckpointSpawn;
 //////////////////////////////// Storage untuk penyimpanan body dan Rock untuk random generated assets//
 var terrainGraphics;
 var startLine;
@@ -63,6 +64,7 @@ export class InGame extends Phaser.Scene {
     bodyStore = [];
     rockStore= [];
     terrainGraphics = [];
+    CheckpointSpawn = [];
     distanceTreshold = false;
     startLine = new Phaser.Math.Vector2(-200, Math.random());
 
@@ -319,6 +321,7 @@ export class InGame extends Phaser.Scene {
   restart()
   {
     console.log("loop");
+    this.Physics.Arcade.isPaused = true;
   }
 
   checkpoint(distanceTreshold)
@@ -478,6 +481,47 @@ export class InGame extends Phaser.Scene {
           rock.inPool = false;
         }
       }
+
+      // if(distance.x %30 == 0){
+
+      //   let rock2;
+      //   let size = Phaser.Math.Between(20, 30);
+      //   let depth = Phaser.Math.Between(0, size / 2);
+      //   let rockX = center.x + start.x * Math.cos(angle + Math.PI / 2);
+      //   let rockY = center.y - 200 * Math.sin(angle + Math.PI / 2);
+
+      //   graphics.fillStyle(0x6b6b6b, 1);
+      //   graphics.fillCircle(rockX - start.x, rockY, size);
+
+      //   if(CheckpointSpawn.length == 0 ){
+
+      //     rock2 = this.matter.add.circle(rockX, rockY, size, {
+
+      //       label: 'rock',
+      //       isStatic: true,
+      //       angle: angle,
+      //       friction: 1,
+      //       restitution: 0,
+      //       collionFilter:{
+      //         category: 2
+      //       }
+      //     });
+
+      //     rock2.inPool = false;
+      //   }
+
+      //   else {
+
+      //     rock2 = CheckpointSpawn.shift();
+      //     this.matter.body.scale(rock, size / rock2.circleRadius, size / rock2.circleRadius);
+      //     this.matter.body.setPosition(rock, {
+      //       x: rockX,
+      //       y: rockY
+      //     });
+
+      //     rock2.inPool = false;
+      //   }
+      // }// masih on progress
     }
 
     graphics.width = pointX - 1;
