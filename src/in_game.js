@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 var cargo;
 var bodyStore;
 var rockStore;
-var CheckpointSpawn;
+var checkpointSpawn;
 //////////////////////////////// Storage untuk penyimpanan body dan Rock untuk random generated assets//
 var terrainGraphics;
 var startLine;
@@ -64,7 +64,7 @@ export class InGame extends Phaser.Scene {
     bodyStore = [];
     rockStore= [];
     terrainGraphics = [];
-    CheckpointSpawn = [];
+    checkpointSpawn = [];
     distanceTreshold = false;
     startLine = new Phaser.Math.Vector2(-200, Math.random());
 
@@ -104,6 +104,8 @@ export class InGame extends Phaser.Scene {
     // timeBar.scaleY = 2;
 
     graphics = this.add.graphics(0,100).setScale(2.5);
+    graphics.fillStyle(0x8b0000,1);
+    graphics.fillRect(0, 20,100, 8);
 
     tresholdValue = 0;
     distanceConvertString = this.add.text(0, 30, 'DISTANCE', {
@@ -205,7 +207,7 @@ export class InGame extends Phaser.Scene {
 
       distanceTreshold = false;
     }
-    
+
     this.checkpoint(distanceTreshold);
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
@@ -223,15 +225,13 @@ export class InGame extends Phaser.Scene {
     timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
     timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
-      graphics.x = this.cameras.main.scrollX+210;
+    graphics.x = this.cameras.main.scrollX+210;
 
-      graphics.fillStyle(0x8b0000,1);
-      graphics.fillRect(0, 20,100, 8);
-      if(tresholdTime.getProgress()<1&&graphics.scaleX>0)
-      {
-      graphics.scaleX-=0.00143;
+    if(tresholdTime.getProgress()<1&&graphics.scaleX>0){
+
+      graphics.scaleX -= 0.00143;
       //console.log(graphics.scaleX);
-      }
+    }
 
   }
 
@@ -321,7 +321,7 @@ export class InGame extends Phaser.Scene {
   restart()
   {
     console.log("loop");
-    this.Physics.Arcade.isPaused = true;
+    Phaser.Physics.Arcade.isPaused = true;
   }
 
   checkpoint(distanceTreshold)
@@ -461,7 +461,7 @@ export class InGame extends Phaser.Scene {
             angle: angle,
             friction: 1,
             restitution: 0,
-            collionFilter:{
+            collisionFilter:{
               category: 2
             }
           });
@@ -493,7 +493,7 @@ export class InGame extends Phaser.Scene {
       //   graphics.fillStyle(0x6b6b6b, 1);
       //   graphics.fillCircle(rockX - start.x, rockY, size);
 
-      //   if(CheckpointSpawn.length == 0 ){
+      //   if(checkpointSpawn.length == 0 ){
 
       //     rock2 = this.matter.add.circle(rockX, rockY, size, {
 
@@ -512,7 +512,7 @@ export class InGame extends Phaser.Scene {
 
       //   else {
 
-      //     rock2 = CheckpointSpawn.shift();
+      //     rock2 = checkpointSpawn.shift();
       //     this.matter.body.scale(rock, size / rock2.circleRadius, size / rock2.circleRadius);
       //     this.matter.body.setPosition(rock, {
       //       x: rockX,
