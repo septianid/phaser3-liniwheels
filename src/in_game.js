@@ -18,6 +18,7 @@ let cartwheelRear;
 ////////////////////////////// Cart Structure generation
 let bodies;
 var isMoving;
+var canMoving;
 
 var distanceTreshold;
 var distanceUi;
@@ -103,9 +104,9 @@ export class InGame extends Phaser.Scene {
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
 
-    graphics = this.add.graphics(0,100).setScale(2.5);
+    graphics = this.add.graphics(0, 100)
     graphics.fillStyle(0x8b0000,1);
-    graphics.fillRect(0, 20,100, 8);
+    graphics.fillRect(0, 60, 150, 15);
 
     tresholdValue = 0;
     distanceConvertString = this.add.text(0, 30, 'DISTANCE', {
@@ -192,23 +193,20 @@ export class InGame extends Phaser.Scene {
     });
 
     if(tresholdValue % 30 == 0 && tresholdValue != 0){
-
       if (distanceTreshold === false) {
-
+        //console.log('Test');
         distanceTreshold = true;
         valueScore += 1;
       }
       else {
-
         valueScore += 0;
       }
     }
     else {
-
       distanceTreshold = false;
     }
 
-    this.checkpoint(distanceTreshold);
+    //this.checkpoint(distanceTreshold);
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
     distanceConvertString.x = this.cameras.main.scrollX + 80;
@@ -225,12 +223,14 @@ export class InGame extends Phaser.Scene {
     timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
     timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
-    graphics.x = this.cameras.main.scrollX+210;
+    graphics.x = this.cameras.main.scrollX + 210;
 
-    if(tresholdTime.getProgress()<1&&graphics.scaleX>0){
-
-      graphics.scaleX -= 0.00143;
-      //console.log(graphics.scaleX);
+    if(tresholdTime.getProgress() < 1 && graphics.scaleX > 0){
+      canMoving = true
+      graphics.scaleX = (1 - tresholdTime.getProgress()) * 2;
+    }
+    else {
+      canMoving = false
     }
 
   }
@@ -309,26 +309,21 @@ export class InGame extends Phaser.Scene {
   }
 
   accelerateCar(){
-
-    isMoving = true;
+    isMoving = canMoving === true ? true : false;
   }
 
   decelerateCar(){
-
     isMoving = false;
   }
 
-  restart()
-  {
-    console.log("loop");
+  restart(){
+    //console.log("loop");
     Phaser.Physics.Arcade.isPaused = true;
   }
 
-  checkpoint(distanceTreshold)
-  {
-    if(tresholdValue%30==0&&tresholdValue!=0)
-    {
-      console.log("Testing Berhasil");
+  checkpoint(distanceTreshold){
+    if(tresholdValue % 30 == 0 && tresholdValue != 0){
+      //console.log("Testing Berhasil")
     }
   }
 
