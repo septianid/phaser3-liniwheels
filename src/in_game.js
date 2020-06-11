@@ -19,7 +19,11 @@ let cartwheelRear;
 ////////////////////////////// Cart Structure generation
 let bodies;
 var isMoving;
+var canMoving;
 
+var syaratfinalscore;
+var final_panel_appear;
+var final_panel;
 var flag;
 var syaratspawn;
 var berhenti;
@@ -66,6 +70,7 @@ export class InGame extends Phaser.Scene {
     this.load.image('flag','./src/assets/flag.png');
     this.load.image('Exit','./src/assets/Exit.png');
     this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
+    this.load.image('score','./src/assets/score.png');
   }
 
   create(){
@@ -78,6 +83,7 @@ export class InGame extends Phaser.Scene {
     startLine = new Phaser.Math.Vector2(-200, Math.random());
     syaratspawn = 0;
     berhenti = 0;
+    syaratfinalscore = 0;
     for(let i = 0; i < gameOption.mountainTotal; i++){
 
       terrainGraphics[i] =  this.add.graphics();
@@ -113,11 +119,9 @@ export class InGame extends Phaser.Scene {
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
 
-
-
-    graphics = this.add.graphics(0,100).setScale(2.5);
+    graphics = this.add.graphics(0, 100)
     graphics.fillStyle(0x8b0000,1);
-    graphics.fillRect(0, 20,100, 8);
+    graphics.fillRect(0, 60, 150, 15);
 
     tresholdValue = 0;
 
@@ -163,9 +167,13 @@ export class InGame extends Phaser.Scene {
     flag = this.add.sprite(0,220,'Flag').setScale(2);
     flag.setOrigin(0.5,0.5);
 
+    final_panel = this.add.sprite(0,380,'score').setScale(0.5);
+    final_panel.setOrigin(0.5,0.5);
+
   }
 
   update(){
+    final_panel.visible = false;//set visibility untuk final score
     flag.visible = false;//set visibility untuk checkpoint
     this.cameras.main.scrollX = cartStructure.position.x - this.game.config.width / 8;       
     if(isMoving){
@@ -209,29 +217,26 @@ export class InGame extends Phaser.Scene {
     });
 
     if(tresholdValue % 30 == 0 && tresholdValue != 0){
-
       if (distanceTreshold === false) {
-
+        //console.log('Test');
         distanceTreshold = true;
         valueScore += 1;
       }
       else {
-
         valueScore += 0;
       }
     }
     else {
-
       distanceTreshold = false;
     }
     if(distanceSpawn%30 == 0 && tresholdValue != 0)
         {
           //this.SpawningSystem();
-          console.log("Masuk");
+          //console.log("Masuk");
           flag.visible = true;//fungsi nampilin checkpoint
         }
 
-    this.checkpoint(distanceTreshold);
+    //this.checkpoint(distanceTreshold);
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
     distanceSpawn = Math.floor(this.cameras.main.scrollX/100);
@@ -251,15 +256,25 @@ export class InGame extends Phaser.Scene {
     timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
     flag.x = this.cameras.main.scrollX+this.game.config.width/2;
+    final_panel.x = this.cameras.main.scrollX+this.game.config.width/2;
+    graphics.x = this.cameras.main.scrollX + 210;
 
-    graphics.x = this.cameras.main.scrollX+210;
+    if(tresholdTime.getProgress() < 1 && graphics.scaleX > 0){
+      canMoving = true;
+      graphics.scaleX = (1 - tresholdTime.getProgress()) * 2;
+    }
+    else {
+      canMoving = false;
+      //final_panel_appear = this.time.delayedCall(7000,this.appear(),[],this);
+      final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
+    }
 
-    if(tresholdTime.getProgress()<1&&graphics.scaleX>0){
-
-      graphics.scaleX -= 0.00143;
-      //console.log(graphics.scaleX);
-    }     
-  } 
+    if(syaratfinalscore==1)
+    {
+      final_panel.visible = true;
+    }//syarat penampilan final panel score
+    //console.log(syaratfinalscore);
+  }
 
   generatePlayercar(posX, posY){
 
@@ -335,31 +350,28 @@ export class InGame extends Phaser.Scene {
   }
 
   accelerateCar(){
-    
-    isMoving = true;
-    
+    isMoving = canMoving === true ? true : false;
   }
 
   decelerateCar(){
-
     isMoving = false;
   }
 
-  restart()
-  {
-    
-    console.log("loop");
-    //this.input.on("pointerdown", () => this.decelerateCar());
-    //this.input.on("pointerup", () => this.decelerateCar());
-    this.Panel_End();
-    
-  }//Fuction manggil end of timed event
+  restart(){
+    //console.log("loop");
+    //Phaser.Physics.Arcade.isPaused = true;   
+  }
 
-  checkpoint(distanceTreshold)
+  appear()
   {
-    if(tresholdValue%30==0&&tresholdValue!=0)
-    {
-      console.log("Checkpoint");        
+    syaratfinalscore=1;
+    //final_panel.visible = true;
+    //console.log("APPEAR");
+  }
+
+  checkpoint(distanceTreshold){
+    if(tresholdValue % 30 == 0 && tresholdValue != 0){
+      //console.log("Testing Berhasil")
     }
   }//function checkpoint
 
