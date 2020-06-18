@@ -63,14 +63,14 @@ export class InGame extends Phaser.Scene {
 
   preload(){
 
-    this.load.image('time', './src/assets/time.png');
-    this.load.image('timebar', './src/assets/time_bar.png');
-    this.load.image('crate','./src/assets/Crate.png');
-    this.load.image('Roda','./src/assets/roda.png');
-    this.load.image('flag','./src/assets/flag.png');
-    this.load.image('Exit','./src/assets/Exit.png');
-    this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
-    this.load.image('score','./src/assets/score.png');
+    // this.load.image('time', './src/assets/time.png');
+    // this.load.image('timebar', './src/assets/time_bar.png');
+    // this.load.image('crate','./src/assets/Crate.png');
+    // this.load.image('Roda','./src/assets/roda.png');
+    // this.load.image('flag','./src/assets/flag.png');
+    // this.load.image('Exit','./src/assets/Exit.png');
+    // this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
+    // this.load.image('score','./src/assets/score.png');
   }
 
   create(){
@@ -94,13 +94,7 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-    this.matter.world.on('collisionstart', (event, objectA, objectB) => {
-
-      if((objectA.label == 'cargo' && objectB.label != 'car') || (objectB.label == 'cargo' && objectA.label != 'car')){
-
-        this.scene.start('PlayScene');
-      }
-    });
+    
 
     // this.matter.world.on('collisionactive', (e) => {
     //
@@ -153,12 +147,12 @@ export class InGame extends Phaser.Scene {
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
-    timeUi = this.add.text(0,150,''+tresholdTime,{
-      font: 'bold 42px Arial',
-      fill: 'white',
-      align: 'center'
-    }).setOrigin(0.5, 0.5);
-    timeUi.setScale(0.9);
+    // timeUi = this.add.text(0,150,''+tresholdTime,{
+    //   font: 'bold 42px Arial',
+    //   fill: 'white',
+    //   align: 'center'
+    // }).setOrigin(0.5, 0.5);
+    // timeUi.setScale(0.9);// command time.UI
 
     this.input.on("pointerdown", () => this.accelerateCar());
     this.input.on("pointerup", () => this.decelerateCar());
@@ -169,6 +163,21 @@ export class InGame extends Phaser.Scene {
 
     final_panel = this.add.sprite(0,380,'score').setScale(0.5);
     final_panel.setOrigin(0.5,0.5);
+
+    this.matter.world.on('collisionstart', (events) => 
+    {
+      events.pairs.forEach((pair) =>
+       {
+      const {bodyA, bodyB} = pair;
+      if((bodyA.label == 'cargo' && bodyB.label != 'car') || (bodyB.label == 'cargo' && bodyA.label != 'car'))
+      {       
+        isMoving = false;       
+        final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay    
+        this.input.on("pointerdown", () => this.decelerateCar());       
+        graphics.scaleX = 0;
+      }
+    })
+    });// function object collision
 
   }
 
@@ -252,8 +261,8 @@ export class InGame extends Phaser.Scene {
     scoreUi.x = this.cameras.main.scrollX + 640;
     scoreUi.setText(''+valueScore);
 
-    timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
-    timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
+    // timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
+    // timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
     flag.x = this.cameras.main.scrollX+this.game.config.width/2;
     final_panel.x = this.cameras.main.scrollX+this.game.config.width/2;
@@ -264,7 +273,7 @@ export class InGame extends Phaser.Scene {
       graphics.scaleX = (1 - tresholdTime.getProgress()) * 2;
     }
     else {
-      canMoving = false;
+      isMoving = false;
       //final_panel_appear = this.time.delayedCall(7000,this.appear(),[],this);
       final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
     }
@@ -274,6 +283,8 @@ export class InGame extends Phaser.Scene {
       final_panel.visible = true;
     }//syarat penampilan final panel score
     //console.log(syaratfinalscore);
+
+    
   }
 
   generatePlayercar(posX, posY){
