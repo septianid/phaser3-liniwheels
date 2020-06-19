@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import {
-  InGame
-} from './in_game.js';
+import { InGame } from './in_game.js';
+import { Menu } from './main_menu.js';
+import { Loading } from './loading.js'
 
 const config = {
   type: Phaser.CANVAS,

@@ -94,7 +94,7 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-    
+
 
     // this.matter.world.on('collisionactive', (e) => {
     //
@@ -157,23 +157,23 @@ export class InGame extends Phaser.Scene {
     this.input.on("pointerdown", () => this.accelerateCar());
     this.input.on("pointerup", () => this.decelerateCar());
     tresholdTime = this.time.delayedCall(30000,this.restart(),[],this);
-    
+
     flag = this.add.sprite(0,220,'Flag').setScale(2);
     flag.setOrigin(0.5,0.5);
 
     final_panel = this.add.sprite(0,380,'score').setScale(0.5);
     final_panel.setOrigin(0.5,0.5);
 
-    this.matter.world.on('collisionstart', (events) => 
+    this.matter.world.on('collisionstart', (events) =>
     {
       events.pairs.forEach((pair) =>
        {
       const {bodyA, bodyB} = pair;
       if((bodyA.label == 'cargo' && bodyB.label != 'car') || (bodyB.label == 'cargo' && bodyA.label != 'car'))
-      {       
-        isMoving = false;       
-        final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay    
-        this.input.on("pointerdown", () => this.decelerateCar());       
+      {
+        isMoving = false;
+        final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
+        this.input.on("pointerdown", () => this.decelerateCar());
         graphics.scaleX = 0;
       }
     })
@@ -184,7 +184,7 @@ export class InGame extends Phaser.Scene {
   update(){
     final_panel.visible = false;//set visibility untuk final score
     flag.visible = false;//set visibility untuk checkpoint
-    this.cameras.main.scrollX = cartStructure.position.x - this.game.config.width / 8;       
+    this.cameras.main.scrollX = cartStructure.position.x - this.game.config.width / 8;
     if(isMoving){
 
       let carVelocity;
@@ -284,7 +284,7 @@ export class InGame extends Phaser.Scene {
     }//syarat penampilan final panel score
     //console.log(syaratfinalscore);
 
-    
+
   }
 
   generatePlayercar(posX, posY){
@@ -314,7 +314,7 @@ export class InGame extends Phaser.Scene {
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(0.08);
+    }).setScale(0.8);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
@@ -370,7 +370,7 @@ export class InGame extends Phaser.Scene {
 
   restart(){
     //console.log("loop");
-    //Phaser.Physics.Arcade.isPaused = true;   
+    //Phaser.Physics.Arcade.isPaused = true;
   }
 
   appear()
@@ -390,7 +390,7 @@ export class InGame extends Phaser.Scene {
   {
     //var instruksi_panel = this.add.sprite(360,580, 'Leaderboard').setScale(2);
     //instruksi_panel.setOrigin(0.5,0.5);
-    
+
 
   }//end panel
 
