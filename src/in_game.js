@@ -289,19 +289,22 @@ export class InGame extends Phaser.Scene {
 
   generatePlayercar(posX, posY){
 
-    let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 110, 20, {
+    let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY-40, 110, 20, {
       label: 'car',
     });
-    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 55, posY - 25, 20, 30, {
+    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 55, posY - 65, 20, 30, {
       label: 'car',
     });
-    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 25, 20, 30,{
+    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 65, 20, 30,{
+      label: 'car',
+    });
+    let badanmobil = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 150, 50,{
       label: 'car',
     });
 
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
-      parts: [container_floor, container_left_wall, container_right_wall],
+      parts: [container_floor, container_left_wall, container_right_wall,badanmobil],
       friction: 1,
       restitution: 0,
     });
@@ -309,12 +312,12 @@ export class InGame extends Phaser.Scene {
     this.matter.world.add(cartStructure);
     //console.log(posX);
 
-    cargo = this.matter.add.sprite(posX, posY - 4, 'crate', 0, {
+    cargo = this.matter.add.sprite(posX, posY - 100, 'crate', 0, {
 
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(0.8);
+    }).setScale(0.09);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
@@ -333,32 +336,33 @@ export class InGame extends Phaser.Scene {
 
     this.matter.add.constraint(cartStructure, cartwheelFront, 30, 0, {
       pointA:{
-        x: 35,
-        y: 10
+        x: 50,
+        y: 35
       }
     });
 
     this.matter.add.constraint(cartStructure, cartwheelFront, 30, 0, {
       pointA:{
-        x: 50,
-        y: 10
-      }
-    });
-
-    this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
-      pointA:{
-        x: -35,
-        y: 10
+        x: 70,
+        y: 35
       }
     });
 
     this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
       pointA:{
         x: -50,
-        y: 10
+        y: 35
+      }
+    });
+
+    this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
+      pointA:{
+        x: -70,
+        y: 35
       }
     });
   }
+
 
   accelerateCar(){
     isMoving = canMoving === true ? true : false;
