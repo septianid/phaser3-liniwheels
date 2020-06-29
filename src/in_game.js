@@ -164,24 +164,22 @@ export class InGame extends Phaser.Scene {
     final_panel = this.add.sprite(0,380,'score').setScale(0.5);
     final_panel.setOrigin(0.5,0.5);
 
-    this.matter.world.on('collisionstart', (events) =>
-    {
-      events.pairs.forEach((pair) =>
-       {
-      const {bodyA, bodyB} = pair;
-      if((bodyA.label == 'cargo' && bodyB.label != 'car') || (bodyB.label == 'cargo' && bodyA.label != 'car'))
-      {
-        isMoving = false;
-        final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
-        this.input.on("pointerdown", () => this.decelerateCar());
-        graphics.scaleX = 0;
-      }
-    })
+    this.matter.world.on('collisionstart', (events) =>{
+      events.pairs.forEach((pair) => {
+        const {bodyA, bodyB} = pair;
+        if((bodyA.label == 'cargo' && bodyB.label != 'car') || (bodyB.label == 'cargo' && bodyA.label != 'car')){
+          isMoving = false;
+          final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
+          this.input.on("pointerdown", () => this.decelerateCar());
+          graphics.scaleX = 0;
+        }
+      })
     });// function object collision
 
   }
 
   update(){
+
     final_panel.visible = false;//set visibility untuk final score
     flag.visible = false;//set visibility untuk checkpoint
     this.cameras.main.scrollX = cartStructure.position.x - this.game.config.width / 8;
@@ -238,7 +236,7 @@ export class InGame extends Phaser.Scene {
     else {
       distanceTreshold = false;
     }
-    if(distanceSpawn%30 == 0 && tresholdValue != 0)
+    if(distanceSpawn % 30 == 0 && tresholdValue != 0)
         {
           //this.SpawningSystem();
           //console.log("Masuk");
@@ -317,7 +315,7 @@ export class InGame extends Phaser.Scene {
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(0.09);
+    }).setScale(1);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
