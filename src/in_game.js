@@ -71,6 +71,9 @@ export class InGame extends Phaser.Scene {
     // this.load.image('Exit','./src/assets/Exit.png');
     // this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
     // this.load.image('score','./src/assets/score.png');
+    this.load.json('car', './src/assets/Car.json')
+    this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json')
+    //this.load.image('test_car', './src/assets/MobilTest.png')
   }
 
   create(){
@@ -94,7 +97,11 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-
+    var carJson = this.cache.json.get('car')
+    var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {
+      shape: carJson.MobilTest
+    }).setScale(0.2)
+    console.log();
 
     // this.matter.world.on('collisionactive', (e) => {
     //
