@@ -41,6 +41,9 @@ var scoreUi;
 var valueScore;
 var infoTextui;
 
+var shapes;
+var strukturmobil;
+
 var gameOption = {
 
   mountainTotal : 3,
@@ -94,7 +97,11 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-
+    shapes = this.cache.json.get('jsonMobil');
+    strukturmobil = this.matter.add.sprite(400, 250,'TestCar',{
+      shape: shapes,
+      label: 'car'
+    }).setScale(1);
 
     // this.matter.world.on('collisionactive', (e) => {
     //
@@ -315,7 +322,7 @@ export class InGame extends Phaser.Scene {
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(1);
+    }).setScale(0.09);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
