@@ -34,15 +34,17 @@ var distanceUi;
 var tresholdValue;
 var distanceConvertString;
 var graphics;
+var Maximum_TreshHold = 10;
+var Minimum_TreshHold = 0;
+var checkpoint_TreshHold;
+//////////////////////////////// Semua Function Untuk pengaruhin treshhold
+
 
 //var timeBar;
 
 var scoreUi;
 var valueScore;
 var infoTextui;
-
-var shapes;
-var strukturmobil;
 
 var gameOption = {
 
@@ -100,7 +102,11 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-    
+    // var carJson = this.cache.json.get('car')
+    // var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {
+    //   shape: carJson.MobilTest
+    // }).setScale(0.2)
+    // console.log();// fungsi Badan jangan diapus
 
     // this.matter.world.on('collisionactive', (e) => {
     //
@@ -182,6 +188,7 @@ export class InGame extends Phaser.Scene {
       })
     });// function object collision
 
+    checkpoint_TreshHold = Phaser.Math.Between(Minimum_TreshHold, Maximum_TreshHold);
   }
 
   update(){
@@ -229,11 +236,18 @@ export class InGame extends Phaser.Scene {
       }
     });
 
-    if(tresholdValue % 30 == 0 && tresholdValue != 0){
+    console.log(checkpoint_TreshHold);
+    if(tresholdValue == checkpoint_TreshHold && tresholdValue != 0){
       if (distanceTreshold === false) {
         //console.log('Test');
         distanceTreshold = true;
         valueScore += 1;
+        ////////////////////////////////
+              Minimum_TreshHold = Minimum_TreshHold+5;
+              Maximum_TreshHold = Maximum_TreshHold+5;
+              checkpoint_TreshHold = Phaser.Math.Between(Minimum_TreshHold, Maximum_TreshHold);
+              console.log("Berganti Angka Menjadi");
+              console.log(checkpoint_TreshHold);
       }
       else {
         valueScore += 0;
@@ -242,12 +256,15 @@ export class InGame extends Phaser.Scene {
     else {
       distanceTreshold = false;
     }
-    if(distanceSpawn % 30 == 0 && tresholdValue != 0)
-        {
+    if(distanceSpawn  == checkpoint_TreshHold && tresholdValue != 0)
+    {
           //this.SpawningSystem();
           //console.log("Masuk");
           flag.visible = true;//fungsi nampilin checkpoint
-        }
+    }
+
+   
+  
 
     //this.checkpoint(distanceTreshold);
 
@@ -302,17 +319,13 @@ export class InGame extends Phaser.Scene {
     let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 65, 20, 30,{
       label: 'car',
     });
-
-    var carJson = this.cache.json.get('car');
-    let mobil = this.matter.add.sprite(posX, posY,'car_sheet', 'MobilTest.png', {
-      shape: carJson.MobilTest,
-      label: 'car'
-    }).setScale(0.2);
-    console.log();
+    let badanmobil = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 150, 50,{
+      label: 'car',
+    });
 
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
-      parts: [container_floor, container_left_wall, container_right_wall,mobil],
+      parts: [container_floor, container_left_wall, container_right_wall,badanmobil],
       friction: 1,
       restitution: 0,
     });
@@ -398,13 +411,7 @@ export class InGame extends Phaser.Scene {
     }
   }//function checkpoint
 
-  Panel_End()
-  {
-    //var instruksi_panel = this.add.sprite(360,580, 'Leaderboard').setScale(2);
-    //instruksi_panel.setOrigin(0.5,0.5);
-
-
-  }//end panel
+  
 
   terrainGeneration(graphics, start){
 
@@ -554,9 +561,7 @@ export class InGame extends Phaser.Scene {
 
           rock.inPool = false;
         }
-      }
-
-     
+      }     
     }
 
     graphics.width = pointX - 1;
