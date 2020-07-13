@@ -74,6 +74,9 @@ export class InGame extends Phaser.Scene {
     // this.load.image('Exit','./src/assets/Exit.png');
     // this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
     // this.load.image('score','./src/assets/score.png');
+    this.load.json('car', './src/assets/Car.json')
+    this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json')
+    //this.load.image('test_car', './src/assets/MobilTest.png')
   }
 
   create(){
@@ -97,11 +100,7 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-    shapes = this.cache.json.get('jsonMobil');
-    strukturmobil = this.matter.add.sprite(400, 250,'TestCar',{
-      shape: shapes,
-      label: 'car'
-    }).setScale(1);
+    
 
     // this.matter.world.on('collisionactive', (e) => {
     //
@@ -303,13 +302,17 @@ export class InGame extends Phaser.Scene {
     let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 65, 20, 30,{
       label: 'car',
     });
-    let badanmobil = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 150, 50,{
-      label: 'car',
-    });
+
+    var carJson = this.cache.json.get('car');
+    let mobil = this.matter.add.sprite(posX, posY,'car_sheet', 'MobilTest.png', {
+      shape: carJson.MobilTest,
+      label: 'car'
+    }).setScale(0.2);
+    console.log();
 
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
-      parts: [container_floor, container_left_wall, container_right_wall,badanmobil],
+      parts: [container_floor, container_left_wall, container_right_wall,mobil],
       friction: 1,
       restitution: 0,
     });
@@ -553,46 +556,7 @@ export class InGame extends Phaser.Scene {
         }
       }
 
-      // if(distance.x %30 == 0){
-
-      //   let rock2;
-      //   let size = Phaser.Math.Between(20, 30);
-      //   let depth = Phaser.Math.Between(0, size / 2);
-      //   let rockX = center.x + start.x * Math.cos(angle + Math.PI / 2);
-      //   let rockY = center.y - 200 * Math.sin(angle + Math.PI / 2);
-
-      //   graphics.fillStyle(0x6b6b6b, 1);
-      //   graphics.fillCircle(rockX - start.x, rockY, size);
-
-      //   if(checkpointSpawn.length == 0 ){
-
-      //     rock2 = this.matter.add.circle(rockX, rockY, size, {
-
-      //       label: 'rock',
-      //       isStatic: true,
-      //       angle: angle,
-      //       friction: 1,
-      //       restitution: 0,
-      //       collionFilter:{
-      //         category: 2
-      //       }
-      //     });
-
-      //     rock2.inPool = false;
-      //   }
-
-      //   else {
-
-      //     rock2 = checkpointSpawn.shift();
-      //     this.matter.body.scale(rock, size / rock2.circleRadius, size / rock2.circleRadius);
-      //     this.matter.body.setPosition(rock, {
-      //       x: rockX,
-      //       y: rockY
-      //     });
-
-      //     rock2.inPool = false;
-      //   }
-      // }// masih on progress
+     
     }
 
     graphics.width = pointX - 1;
