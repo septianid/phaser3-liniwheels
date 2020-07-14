@@ -37,6 +37,7 @@ var graphics;
 var Maximum_TreshHold = 10;
 var Minimum_TreshHold = 0;
 var checkpoint_TreshHold;
+var Static_TreshHold = 3;
 //////////////////////////////// Semua Function Untuk pengaruhin treshhold
 
 
@@ -188,7 +189,8 @@ export class InGame extends Phaser.Scene {
       })
     });// function object collision
 
-    checkpoint_TreshHold = Phaser.Math.Between(Minimum_TreshHold, Maximum_TreshHold);
+    // checkpoint_TreshHold = Phaser.Math.Between(Minimum_TreshHold, Maximum_TreshHold);// INI juga jangan dihapus
+    checkpoint_TreshHold = Static_TreshHold;
   }
 
   update(){
@@ -243,11 +245,17 @@ export class InGame extends Phaser.Scene {
         distanceTreshold = true;
         valueScore += 1;
         ////////////////////////////////
-              Minimum_TreshHold = Minimum_TreshHold+5;
-              Maximum_TreshHold = Maximum_TreshHold+5;
-              checkpoint_TreshHold = Phaser.Math.Between(Minimum_TreshHold, Maximum_TreshHold);
-              console.log("Berganti Angka Menjadi");
-              console.log(checkpoint_TreshHold);
+              // Minimum_TreshHold = Minimum_TreshHold+5;
+              // Maximum_TreshHold = Maximum_TreshHold+5;
+              // checkpoint_TreshHold = Phaser.Math.Between(Minimum_TreshHold, Maximum_TreshHold);
+              // console.log("Berganti Angka Menjadi");
+              // console.log(checkpoint_TreshHold);            
+        /////////////////////////////// Dynamic Checkpoint Treshhold
+              Static_TreshHold = Static_TreshHold+3;
+              checkpoint_TreshHold = Static_TreshHold;             
+              console.log(Static_TreshHold);
+        /////////////////////////////// Static Checkpoint TreshHold
+              
       }
       else {
         valueScore += 0;
