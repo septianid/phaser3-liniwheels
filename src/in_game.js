@@ -194,7 +194,6 @@ export class InGame extends Phaser.Scene {
   }
 
   update(){
-
     final_panel.visible = false;//set visibility untuk final score
     flag.visible = false;//set visibility untuk checkpoint
     this.cameras.main.scrollX = cartStructure.position.x - this.game.config.width / 8;
