@@ -38,6 +38,9 @@ export class Loading extends Phaser.Scene{
     this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
     this.load.image('score','./src/assets/score.png');
 
+    this.load.image('TestCar','./src/assets/MobilTest.png');
+    this.load.json('jsonMobil', './src/assets/Car.json');
+
     progressBar = this.add.graphics();
     progressBox = this.add.sprite(360, 640, 'LOADING_BOX').setScale(0.4);
 
