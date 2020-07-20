@@ -65,10 +65,10 @@ export class Menu extends Phaser.Scene {
     // }
 
     urlData = {
-      apiLP_URL: 'http://96b162d8c183.ngrok.io/',             //// DEVELOPMENT-LOCAL
+      apiLP_URL: 'https://3fa78f869bdf.ngrok.io/',             //// DEVELOPMENT-LOCAL
       apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     }
-    gameToken = '78709ab074f9ec4a3e66c6c556ac8c96576699f2'
+    gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
 
     this.challengersInfo();
 
@@ -662,8 +662,8 @@ export class Menu extends Phaser.Scene {
         }
 
         availableButton = [challengeGate, challengerListSign, challengerGuideSign, challengerContract, musicToggle]
-        preload.destroy();
-        this.activateButtons();
+        //preload.destroy();
+        //this.activateButtons();
       }
       else {
         //this.showDisclaimer('WM_EVW', 0.5)
@@ -672,7 +672,7 @@ export class Menu extends Phaser.Scene {
     }).catch(error => {
 
       console.log(error);
-      this.showDisclaimer('WM_SE', 0.5)
+      //this.showDisclaimer('WM_SE', 0.5)
     });
   }
 

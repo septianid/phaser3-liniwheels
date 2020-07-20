@@ -8,24 +8,36 @@ export class Loading extends Phaser.Scene{
 
   constructor(){
     super({
-      key: 'Loading'     
+      key: 'Loading'
     });
   }
 
   preload(){
-    this.load.image('ad_button','./src/assets/ad_button.png');
-    this.load.image('play_button', './src/assets/play_button.png');
-    this.load.image('Leaderboard','./src/assets/Leaderboard.png');
-    this.load.image('Leaderboard_panel','./src/assets/Leaderboard_panel.png');
-    this.load.image("Exit",'./src/assets/Exit.png');
-    this.load.image('Instruksi','./src/assets/Instruksi.png');
-    this.load.image('Instruksi_panel','./src/assets/Instruksi_panel.png');
-    this.load.image('panel','./src/assets/panel.png');
-    this.load.image('music','./src/assets/music.png');
-    this.load.image('banned','./src/assets/banned.png');
-    this.load.image('music_on','./src/assets/music_on.png');
-    this.load.image('music_off','./src/assets/music_off.png');
+    this.load.image('MENU_BG', './src/assets/MENU_BG.jpg');
     this.load.image('TAP', './src/assets/TAP_SIGN.png');
+    this.load.image('BM_1P', './src/assets/BM_1P.png');
+    this.load.image('BM_1BPP10', './src/assets/BM_1BPP10.png');
+    this.load.image('BM_1AAD', './src/assets/BM_1AAD.png');
+    this.load.image('BM_2I','./src/assets/BM_2I.png');
+    this.load.image('BM_3TC','./src/assets/BM_3TC.png');
+    this.load.image('BM_4LD','./src/assets/BM_4LD.png');
+    this.load.image('BM_5N','./src/assets/BM_5N.png');
+    this.load.image('BM_5F','./src/assets/BM_5F.png');
+    this.load.image("BM_GEXB",'./src/assets/BM_GEXB.png');
+    this.load.image('BM_CPP','./src/assets/BM_CPP.png');
+    this.load.image('BM_DPP','./src/assets/BM_DPP.png');
+    this.load.image('BM_NEXT','./src/assets/BM_NEXT.png');
+    this.load.image('BM_PREV','./src/assets/BM_PREV.png');
+    this.load.image('PM_1I','./src/assets/PM_1I.png');
+    this.load.image('PM_2TC','./src/assets/PM_2TC.png');
+    this.load.image('PM_3LD','./src/assets/PM_3LD.png');
+    this.load.image('PM_PY','./src/assets/PM_PY.png');
+    this.load.image('LIFE', './src/assets/LIFE.png');
+    this.load.image('DM_PW', './src/assets/DM_PW.png')
+    this.load.image('DM_PP10', './src/assets/DM_PP10.png')
+    this.load.image('DM_ADL', './src/assets/DM_ADL.png')
+    this.load.image('WM_EVW', './src/assets/WM_EVW.png');
+    this.load.image('WM_SE', './src/assets/WM_SE.png');
 
 //////////////////////////////////////////////////////////////////Atas Dummy Assets bawah real assets
 
