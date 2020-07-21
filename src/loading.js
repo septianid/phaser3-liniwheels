@@ -8,7 +8,15 @@ export class Loading extends Phaser.Scene{
 
   constructor(){
     super({
-      key: 'Loading'
+      key: 'Loading',
+      pack: {
+        files: [
+          { type: 'image', key: 'LOADING_BOX', url: 'src/assets/LOADING_BOX.png'},
+          { type: 'image', key: 'LOADING_BG', url: 'src/assets/LOADING_BG.jpg'},
+          { type: 'image', key: 'TITLE', url: './src/assets/LOGO.png'},
+          { type: 'image', key: 'WM_EL', url: './src/assets/WM_EL.png'}
+        ]
+      }
     });
   }
 
@@ -41,14 +49,13 @@ export class Loading extends Phaser.Scene{
 
 //////////////////////////////////////////////////////////////////Atas Dummy Assets bawah real assets
 
+    this.load.image('CRATE','./src/assets/CRATE.png');
     this.load.image('time', './src/assets/time.png');
     this.load.image('timebar', './src/assets/time_bar.png');
-    this.load.image('crate','./src/assets/Crate.png');
     this.load.image('Roda','./src/assets/roda.png');
     this.load.image('flag','./src/assets/flag.png');
     this.load.image('Exit','./src/assets/Exit.png');
-    this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
-    this.load.image('score','./src/assets/score.png');
+    //this.load.image('score','./src/assets/score.png');
 
     this.load.image('TestCar','./src/assets/MobilTest.png');
     this.load.json('jsonMobil', './src/assets/Car.json');

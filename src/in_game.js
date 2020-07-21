@@ -33,9 +33,9 @@ var distanceUi;
 var tresholdValue;
 var distanceConvertString;
 var graphics;
+var checkpoint_TreshHold;
 var maximumTreshHold = 10;
 var minimumTreshHold = 0;
-var checkpoint_TreshHold;
 var staticTreshHold = 3;
 //////////////////////////////// Semua Function Untuk pengaruhin treshhold
 
@@ -49,7 +49,7 @@ var awan3;
 var scoreUi;
 var valueScore;
 var infoTextui;
-
+var gameData = {}
 var gameOption = {
   timeConfig: 30,
   mountainTotal : 3,
@@ -61,13 +61,23 @@ var gameOption = {
   stoneRatio: 5
 };
 
+var CryptoJS = require('crypto-js')
 var simplify = require('simplify-js');
 
 export class InGame extends Phaser.Scene {
 
   constructor(){
 
-    super("PlayScene");
+    super("Game");
+  }
+
+  init(data){
+    gameData.id = data.id;
+    gameData.session = data.session
+    gameData.score = data.game_score
+    gameData.sound = data.sound_status
+    gameData.url = data.game_apiURL
+    gameData.token = data.game_token
   }
 
   preload(){
@@ -85,7 +95,8 @@ export class InGame extends Phaser.Scene {
     startLine = new Phaser.Math.Vector2(-200, Math.random());
     syaratspawn = 0;
     berhenti = 0;
-    syaratfinalscore = 0;
+    //syaratfinalscore = 0;
+    syaratfinalscore = 1;
     for(let i = 0; i < gameOption.mountainTotal; i++){
 
       terrainGraphics[i] =  this.add.graphics();
@@ -96,7 +107,7 @@ export class InGame extends Phaser.Scene {
 
     this.generatePlayercar(250, 400);
 
-   
+
 
     // var carJson = this.cache.json.get('car')
     // var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {
@@ -185,6 +196,8 @@ export class InGame extends Phaser.Scene {
         if((bodyA.label == 'cargo' && bodyB.label != 'car') || (bodyB.label == 'cargo' && bodyA.label != 'car')){
           final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
           graphics.scaleX = 0;
+          tresholdTime.remove(false)
+          console.log('Drop');
           //isMoving = false;
           //this.input.on("pointerdown", () => this.decelerateCar());
         }
@@ -200,7 +213,7 @@ export class InGame extends Phaser.Scene {
     awan2 = this.add.sprite(60, 130, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
     awan3 = this.add.sprite(670, 170, 'cloud3').setScale(1).setDepth(-500).setOrigin(0,0);
 
-    
+
   }
 
   update(){
@@ -260,7 +273,7 @@ export class InGame extends Phaser.Scene {
         /////////////////////////////// Dynamic Checkpoint Treshhold
         staticTreshHold = staticTreshHold + 3;
         checkpoint_TreshHold = staticTreshHold;
-        console.log(staticTreshHold - 2);
+        //console.log(staticTreshHold - 2);
 
         gameOption.timeConfig += (staticTreshHold - 2)
         graphics.scaleX += ((1 / 30) * (staticTreshHold - 2))
@@ -312,20 +325,25 @@ export class InGame extends Phaser.Scene {
       //graphics.scaleX = (1 / tresholdTimeEnd)
     }
     else {
-      //isMoving = false;
-      //final_panel_appear = this.time.delayedCall(7000,this.appear(),[],this);
-      final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
+      if(syaratfinalscore === 1){
+        //final_panel_appear = this.time.delayedCall(7000,this.appear(),[],this);
+        isMoving = false;
+        tresholdTime.remove(false)
+        syaratfinalscore = 0
+        final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
+        console.log('Time Out');
+      }
+      else {
+
+      }
     }
 
     if(gameOption.timeConfig > 30){
       gameOption.timeConfig = 30
       graphics.scaleX = 1
     }
+    //syarat penampilan final panel score
 
-    if(syaratfinalscore == 1){
-      final_panel.visible = true;
-    }//syarat penampilan final panel score
-    //console.log(syaratfinalscore);
     /////////////////////////////////////////////////
     if(awan1.x<this.cameras.main.scrollX-230)
     {
@@ -344,7 +362,7 @@ export class InGame extends Phaser.Scene {
     //////////////////////////////////////////////// Fungsi Kasar Awan
   }
 
-  
+
 
   generatePlayercar(posX, posY){
 
@@ -443,16 +461,15 @@ export class InGame extends Phaser.Scene {
   }
 
   appear(){
-    isMoving = false
-    syaratfinalscore = 1;
+    //isMoving = false
+    final_panel.visible = true;
+    final_panel_appear.remove(false)
+
+    let timeOver = new Date()
+    this.gameOver(timeOver)
     //final_panel.visible = true;
     //console.log("APPEAR");
   }
-
-  
-    
-  
-
 
   terrainGeneration(graphics, start){
 
@@ -615,5 +632,47 @@ export class InGame extends Phaser.Scene {
     return vFrom * (1 - interpolation) + vTo * interpolation;
   }
 
+  gameOver(over){
 
+    //console.log(userLog);
+
+    let requestID = CryptoJS.AES.encrypt('LG'+'+'+gameData.token+'+'+Date.now(), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
+    let dataID;
+    let data = {
+      linigame_platform_token: gameData.token,
+      session: gameData.session,
+      game_end: over,
+      score: valueScore,
+      id: gameData.id,
+      //log: userLog
+    }
+    //console.log(data);
+    let datas = {
+      datas: CryptoJS.AES.encrypt(JSON.stringify(data), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
+    }
+
+    fetch(gameData.url+"api/v1.0/leaderboard/wheels?lang=id", {
+
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'request-id' : requestID
+      },
+      body: JSON.stringify(datas)
+    }).then(response => {
+
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
+      }
+      else {
+        return response.json();
+      }
+
+    }).then(data => {
+      console.log(data.result);
+    }).catch(error => {
+      console.log(error.result);
+    });
+  }
 }
