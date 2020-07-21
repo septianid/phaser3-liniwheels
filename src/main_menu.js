@@ -1,10 +1,30 @@
 import Phaser from 'phaser';
 
-var adButton;
-var leaderButton;
-var instruksiButton;
-var musicButton;
-var musicstatus;
+var preload;
+var challengeGate;
+var challengerListSign;
+var challengerGuideSign;
+var challengerContract;
+var musicToggle;
+var musicStatus;
+var menuSound;
+var clickSound;
+var closeSound;
+var poinPayOption;
+var adWatchPayOption;
+var availableButton = [];
+var gameToken
+var urlData = {}
+var location = {}
+var userData = {};
+var videoProp = {};
+
+navigator.geolocation.getCurrentPosition((xCoord) => {
+  location.latitude = xCoord.coords.latitude
+  location.longitude = xCoord.coords.longitude
+})
+
+var CryptoJS = require('crypto-js');
 
 export class Menu extends Phaser.Scene {
 
@@ -13,219 +33,876 @@ export class Menu extends Phaser.Scene {
     super("MainMenu")
   }
 
+  init(data){
+
+    if(musicStatus === undefined){
+      musicStatus = true;
+    }
+    else {
+      musicStatus = data.sound_status
+    }
+    // clickSound = this.sound.add('CLICK_SOUND')
+    // closeSound = this.sound.add('CLOSE_SOUND')
+    // menuSound = this.sound.add('MENU_SOUND')
+    // menuSound.loop = true;
+    // menuSound.play();
+  }
+
   preload(){
-    
-    this.load.image('ad_button','./src/assets/ad_button.png');
-    this.load.image('play_button', './src/assets/play_button.png');
-    this.load.image('Leaderboard','./src/assets/Leaderboard.png');
-    this.load.image('Leaderboard_panel','./src/assets/Leaderboard_panel.png');
-    this.load.image("Exit",'./src/assets/Exit.png');
-    this.load.image('Instruksi','./src/assets/Instruksi.png');
-    this.load.image('Instruksi_panel','./src/assets/Instruksi_panel.png');
-    this.load.image('panel','./src/assets/panel.png');
-    this.load.image('music','./src/assets/music.png');
-    this.load.image('banned','./src/assets/banned.png');
-    this.load.image('music_on','./src/assets/music_on.png');
-    this.load.image('music_off','./src/assets/music_off.png');
+
   }
 
   create(){
 
-    adButton = this.add.sprite(this.game.config.width / 2, 530, 'play_button').setScale(0.1);
-    leaderButton = this.add.sprite(this.game.config.width/2,660, 'Leaderboard').setScale(1);
-    instruksiButton = this.add.sprite(this.game.config.width/2,720, 'Instruksi').setScale(1);
-    
+    // urlData = {
+    //   apiLP_URL: 'https://linipoin-api.macroad.co.id/',    //// PRODUCTION
+    //   apiCPV_URL: 'https://captive.macroad.co.id/',
+    // }
+    //
+    // urlData = {
+    //   apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
+    //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
+    // }
 
-
-    adButton.setOrigin(0.5, 0.5);
-    adButton.setInteractive();
-    adButton.on('pointerdown', () => this.playgame())
-
-    leaderButton.setOrigin(0.5,0.5);
-    leaderButton.setInteractive();
-    leaderButton.on("pointerdown",() => this.leaderMenu())
-
-    instruksiButton.setOrigin(0.5,0.5);
-    instruksiButton.setInteractive();
-    instruksiButton.on("pointerdown",() => this.instructionMenu())
-
-    musicstatus = true;
-
-    if(musicstatus==true)
-    {
-      musicButton = this.add.sprite(610,1130, 'music_on').setScale(0.2);
-      musicButton.setOrigin(0.5,0.5);
+    urlData = {
+      apiLP_URL: 'https://3fa78f869bdf.ngrok.io/',             //// DEVELOPMENT-LOCAL
+      apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     }
-    else
-    {
-      musicButton = this.add.sprite(610,1130, 'music_off').setScale(0.2);
-      musicButton.setOrigin(0.5,0.5);
-    }
-    musicButton.setInteractive();
-    musicButton.on('pointerdown', () => this.disableMusic());
+    gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
+
+    this.challengersInfo();
+
+    var background = this.add.sprite(360, 1280, 'MENU_BG').setScale(0.68, 0.67)
+    background.setOrigin(0.5, 1);
+
+    var title = this.add.sprite(360, 230, 'TITLE').setScale(0.5)
+    title.setOrigin(0.5, 0.5);
+
+    challengeGate = this.add.sprite(360, 600, 'BM_1P').setScale(0.23);
+    challengeGate.setOrigin(0.5, 0.5);
+    challengeGate.on('pointerdown', () => this.conditionChecking())
+
+    challengerListSign = this.add.sprite(430, 770, 'BM_4LD').setScale(0.16);
+    challengerListSign.setOrigin(0.5,0.5);
+    challengerListSign.on("pointerdown",() => this.showChallengersBoard())
+
+    challengerGuideSign = this.add.sprite(190, 670, 'BM_2I').setScale(0.16);
+    challengerGuideSign.setOrigin(0.5,0.5);
+    challengerGuideSign.on("pointerdown",() => this.showTheGuidance())
+
+    challengerContract = this.add.sprite(300, challengerListSign.y, 'BM_3TC').setScale(0.16);
+    challengerContract.setOrigin(0.5,0.5);
+    challengerContract.on("pointerdown",() => this.showTheContract())
+
+
+    // if(musicStatus === true){
+    //   menuSound.setMute(false)
+    //   musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5N').setScale(0.16);
+    //   musicToggle.setOrigin(0.5,0.5);
+    // }
+    // else{
+    //   menuSound.setMute(true)
+    //   musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5F').setScale(0.16);
+    //   musicToggle.setOrigin(0.5,0.5);
+    // }
+    //
+    // musicToggle.on('pointerdown', () => this.disableMusic());
+    //
+    // this.game.events.on('hidden',function(){
+    //   menuSound.setMute(true);
+    // },this);
+    //
+    // this.game.events.on('visible', function(){
+    //   menuSound.setMute(false);
+    // });
   }
 
   update(){
 
 
   }
-  playgame(){
-    this.scene.start("PlayScene");
+
+  conditionChecking(){
+
+    clickSound.play()
+    this.disableButtons()
+    if(userData.free_chance != 0){
+      let timeStart = new Date()
+      this.beatTheGame(timeStart, true)
+    }
+    else {
+      this.showPaymentOption(10)
+      // availableButton = [poinPayOption, adWatchPayOption, challengerListSign, challengerGuideSign, challengerContract, musicToggle]
+      // this.activateButtons();
+    }
   }
 
-  playAd(){
+  showPaymentOption(required){
 
-    let video = document.createElement('video');
-    let element;
+    let optionBox = this.add.sprite(360, 640, 'PM_PY').setScale(0.5, 0.6);
+    optionBox.setOrigin(0.5, 0.5);
 
-    video.src = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
-    video.playsinline = true;
-    video.width = 720;
-    video.height = 1280;
-    video.autoplay = true;
+    let changeMind = this.add.sprite(600, 470, 'BM_GEXB').setScale(0.15);
+    changeMind.setOrigin(0.5, 0.5);
+    changeMind.setInteractive();
+    changeMind.on('pointerdown', () => {
+      closeSound.play()
+      poinPayOption.destroy();
+      adWatchPayOption.destroy();
+      optionBox.destroy();
+      changeMind.destroy();
+      this.activateButtons()
+    })
 
-    video.addEventListener('play', (event) => {
+    poinPayOption = this.add.sprite(240, 640, 'BM_1BPP'+required).setScale(0.16);
+    poinPayOption.setOrigin(0.5,0.5);
+    poinPayOption.setInteractive();
+    poinPayOption.on('pointerdown', () => {
+      clickSound.play()
+      poinPayOption.disableInteractive()
+      adWatchPayOption.disableInteractive()
+      changeMind.disableInteractive()
+      if(userData.poin < required){
+        this.showDisclaimer('DM_PW', 0.5)
+      }
+      else {
+        this.showPayConfirmation('DM_PP'+required, 0.52, changeMind)
+      }
+    })
 
-      element = this.add.dom(360, 640, video, {
+    adWatchPayOption = this.add.sprite(480, poinPayOption.y, 'BM_1AAD').setScale(0.16);
+    adWatchPayOption.setOrigin(0.5,0.5);
+    adWatchPayOption.setInteractive();
+    adWatchPayOption.on("pointerdown",() => {
+      clickSound.play()
+      poinPayOption.disableInteractive()
+      adWatchPayOption.disableInteractive()
+      changeMind.disableInteractive()
+      this.adVideoSource()
+    })
+  }
+
+  showTheAd(){
+
+    //this.adVideoSource();
+
+    let timerEvent;
+    let timer = videoProp.duration
+    let advideoTimer
+    let adContentEl = document.createElement('video');
+    let adHeaderEl = document.createElement('img');
+    let adContentDom;
+    let adHeaderDom;
+    let adHeaderImgDom;
+
+    adContentEl.src = videoProp.main_source;
+    adContentEl.playsinline = true;
+    adContentEl.width = 720;
+    adContentEl.height = 1280;
+    adContentEl.autoplay = true;
+
+    adHeaderEl.src = videoProp.head_source;
+    adHeaderEl.width = 300;
+    adHeaderEl.height = 70;
+
+    menuSound.pause()
+
+    adContentEl.addEventListener('play', (event) => {
+
+      adContentDom = this.add.dom(360, 640, adContentEl, {
         'background-color': 'black'
       });
-    })
+      adHeaderDom = this.add.dom(360, 360, 'div', {
+        'background-color' : videoProp.background_color,
+        'width' : '720px',
+        'height' : '170px'
+      }).setDepth(1);
+      adHeaderImgDom = this.add.dom(360, 360, adHeaderEl).setDepth(1);
 
-    video.addEventListener('ended', (event) => {
+      advideoTimer = this.add.dom(680, 10, 'p', {
+        'font-family' : 'Arial',
+        'font-size' : '2.1em',
+        'color' : 'white'
+      }, '').setDepth(1)
 
-      element.destroy();
-      //video.destroy();
-      this.scene.start("PlayScene");
+      timerEvent = this.time.addEvent({
+        delay: 1000,
+        callback: function(){
+          timer--
+          advideoTimer.setText(timer)
+
+          if(timer === 0){
+            advideoTimer.destroy()
+            timerEvent.remove(false);
+          }
+        },
+        loop: true
+      })
+
+      adContentEl.addEventListener('ended', (event) => {
+        menuSound.resume()
+        let timeStart = new Date()
+        this.beatTheGame(timeStart, false);
+      })
     })
   }
 
-  getVideoSource(){
+  showPayConfirmation(asset, size, etc){
 
-    fetch('https://linipoin-api.macroad.co.id/api/v1.0/leaderboard/leaderboard_imlek?limit_highscore=5&limit_total_score=5&linigame_platform_token=66cfbe9876ff5097bc861dc8b8fce03ccfe3fb43',{
+    //this.disableButtons()
+    poinPayOption.disableInteractive()
+    adWatchPayOption.disableInteractive()
 
-      method:'GET'
+    let confirmationBoard = this.add.sprite(360, 640, asset).setScale(size);
+    confirmationBoard.setOrigin(0.5, 0.5)
+    confirmationBoard.setDepth(1)
+
+    let confirmChoice = this.add.sprite(280, 810, 'BM_CPP').setScale(0.15);
+    confirmChoice.setOrigin(0.5, 0.5);
+    confirmChoice.setDepth(1)
+    confirmChoice.setInteractive();
+    confirmChoice.on('pointerdown', () => {
+      clickSound.play()
+      this.preloadAnimation(360, 490, 1.0, 8, 'PRE_ANIM1');
+      let timeStart;
+      timeStart = new Date();
+      this.beatTheGame(timeStart, true)
+      confirmChoice.disableInteractive();
+    });
+
+    let denyChoice = this.add.sprite(445, 810, 'BM_DPP').setScale(0.15);
+    denyChoice.setOrigin(0.5, 0.5);
+    denyChoice.setDepth(1)
+    denyChoice.setInteractive();
+    denyChoice.on('pointerdown', () => {
+      clickSound.play()
+      poinPayOption.setInteractive()
+      adWatchPayOption.setInteractive()
+
+      confirmationBoard.destroy();
+      confirmChoice.destroy();
+      denyChoice.destroy();
+      etc.setInteractive();
+      //this.activateButtons()
+    });
+  }
+
+  showDisclaimer(asset, size){
+
+    this.disableButtons()
+    clickSound.play()
+
+    let warningPopUp = this.add.sprite(360, 640, asset).setScale(size);
+    warningPopUp.setOrigin(0.5, 0.5);
+    warningPopUp.setDepth(1);
+
+    if(asset === 'DM_PW'){
+      let closeIt = this.add.sprite(520, 380, 'BM_GEXB').setScale(0.2);
+      closeIt.setOrigin(0.5, 0.5);
+      closeIt.setDepth(1);
+      closeIt.setInteractive();
+      closeIt.on('pointerdown', () => {
+        closeSound.play()
+        warningPopUp.destroy();
+        closeIt.destroy();
+        this.activateButtons();
+      });
+    }
+  }
+
+  showChallengersBoard(){
+
+    clickSound.play()
+
+    this.disableButtons();
+    let idHigh = [];
+    let idCum = [];
+    let scoreHigh = [];
+    let scoreCum = [];
+    let rankHSData = {};
+    let rankTSData = {};
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let userSession = urlParams.get('session');
+
+    var bestChallengerBoard = this.add.sprite(360, 640, 'PM_3LD').setScale(1);
+    bestChallengerBoard.setOrigin(0.5,0.5);
+
+    var imDone =  this.add.sprite(bestChallengerBoard.x + 200, bestChallengerBoard.y - 500, 'BM_GEXB').setScale(0.2);
+    imDone.disableInteractive();
+    imDone.setOrigin(0.5,0.5);
+
+    this.challengerListing(idHigh, idCum, scoreHigh, scoreCum);
+    this.challengerMilestone(userSession, rankHSData, rankTSData, imDone);
+
+    imDone.on('pointerdown',() => {
+      closeSound.play()
+      idHigh.forEach((hText) => {
+        hText.destroy()
+      })
+      idCum.forEach((cText) => {
+        cText.destroy()
+      })
+      scoreHigh.forEach((hText) => {
+        hText.destroy()
+      })
+      scoreCum.forEach((cText) => {
+        cText.destroy()
+      })
+      for(let key in rankHSData){
+        rankHSData[key].destroy()
+      }
+      for(let key in rankTSData){
+        rankTSData[key].destroy()
+      }
+      bestChallengerBoard.destroy();
+      imDone.destroy();
+      this.activateButtons();
+    })
+  }
+
+  showTheGuidance(){
+    clickSound.play()
+    this.disableButtons();
+    var contentText = [
+      '1.\nTap layar untuk menjatuhkan box\n',
+      '2.\nSusun box di area permainan untuk mendapatkan skor, box yang jatuh di luar area permainan tidak mendapatkan skor\n',
+      '3.\nPerhitungan skor dilakukan setelah permainan selesai pada detik ke-30\n',
+      '4.\nSetiap box pada susunan tingkat pertama akan mendapatkan 1 (satu) poin, Setiap box pada susunan tingkat kedua akan mendapatkan 2 (dua) poin, dan berlaku seterusnya'
+    ]
+
+    var guidanceBoard = this.add.sprite(360, 640, 'PM_1I').setScale(1);
+    guidanceBoard.setOrigin(0.5,0.5);
+
+    var imDone =  this.add.sprite(guidanceBoard.x + 200, guidanceBoard.y - 495, 'BM_GEXB').setScale(0.2);
+    imDone.setInteractive();
+    imDone.setOrigin(0.5,0.5);
+
+    var guideText = this.add.text(360, 620, contentText, {
+
+      font: '26px HelveticaRoundedLTStd',
+      fill: '#84446D',
+      align: 'center',
+      wordWrap: {
+        width: 490
+      }
+    }).setOrigin(0.5, 0.5)
+
+    imDone.on('pointerdown',() => {
+      closeSound.play()
+      guidanceBoard.destroy();
+      guideText.destroy();
+      imDone.destroy();
+      this.activateButtons();
+    })
+  }
+
+  showTheContract(){
+    clickSound.play()
+    this.disableButtons();
+
+    let page1 = [
+      "1. Pemain akan mendapatkan 3 (tiga)",
+      "    kali token gratis untuk bermain",
+      "    setiap harinya (selama periode",
+      "    event berlangsung)",
+      "2. Pemain yang ingin bermain lebih",
+      "    dari 3x per hari akan diwajibkan",
+      "    melihat tayangan iklan atau",
+      "    dapat menukarkan 10 poin dari",
+      "    LINIPOIN",
+      "3. Pemain yang berhasil meletakkan",
+      "    kotak pada tempat yg disediakan",
+      "    akan mendapatkan poin berdasarkan" ,
+      "    tingkatan tumpukan kotak",
+      "4. Poin yang didapat dari setiap akhir",
+      "    permainan akan langsung",
+      "    ditambahkan ke akumulasi poin",
+      "    pada LINIPOIN anda masing-masing.",
+      "5. Jika ada pertanyaan lebih lanjut",
+      "    silahkan ajukan ke Pusat Bantuan,",
+      "    DM via Instagram @linipoin.id atau",
+      "    email ke info@linipoin.com"
+    ]
+    let page2 = [
+
+    ]
+
+    let tncContent = [page1, page2]
+    let selector = 0
+
+    var contractBoard = this.add.sprite(360,640, 'PM_2TC').setScale(1, 0.9);
+    contractBoard.setOrigin(0.5, 0.5);
+
+    let text = this.add.text(370, 640, tncContent[selector], {
+      font: '23px HelveticaRoundedLTStd',
+      color: '#606060',
+      align: 'left',
+      wordWrap: {
+        width: 500
+      }
+    }).setOrigin(0.5, 0.5);
+
+    // let nextPage = this.add.sprite(470, 1010, 'BM_NEXT').setScale(0.12)
+    // nextPage.setOrigin(0.5, 0.5);
+    // nextPage.setInteractive()
+    // nextPage.on('pointerdown', () => {
+    //   if(selector >= tncContent.length - 1){
+    //     selector = tncContent.length - 1
+    //   }
+    //   else {
+    //     selector += 1
+    //     clickSound.play()
+    //   }
+    //   text.setText(tncContent[selector]);
+    // })
+    //
+    // let prevPage = this.add.sprite(250, 1010, 'BM_PREV').setScale(0.12)
+    // prevPage.setOrigin(0.5, 0.5);
+    // prevPage.setInteractive()
+    // prevPage.on('pointerdown', () => {
+    //   if(selector <= 0){
+    //     selector = 0
+    //   }
+    //   else {
+    //     clickSound.play()
+    //     selector -= 1
+    //   }
+    //   text.setText(tncContent[selector]);
+    // })
+
+    var imDone =  this.add.sprite(contractBoard.x + 200, contractBoard.y - 450, 'BM_GEXB').setScale(0.2);
+    imDone.setInteractive();
+    imDone.setOrigin(0.5,0.5);
+
+    imDone.on('pointerdown',() => {
+      closeSound.play()
+      contractBoard.destroy();
+      text.destroy();
+      // nextPage.destroy();
+      // prevPage.destroy();
+      imDone.destroy();
+      this.activateButtons();
+    })
+  }
+
+  preloadAnimation(xPos, yPos, size, maxFrame, assetKey){
+
+    preload = this.add.sprite(xPos, yPos, assetKey).setOrigin(0.5 ,0.5);
+    preload.setScale(size);
+    preload.setDepth(1);
+
+    this.anims.create({
+      key: assetKey,
+      frames: this.anims.generateFrameNumbers(assetKey, {
+        start: 1,
+        end: maxFrame
+      }),
+      frameRate: 20,
+      repeat: -1
+    });
+
+    preload.anims.play(assetKey, true);
+  }
+
+  disableMusic(){
+    clickSound.play()
+    if(musicStatus == true){
+      menuSound.setMute(true)
+      musicStatus = false;
+      musicToggle.setTexture('BM_5F');
+      musicToggle.setScale(0.16);
+    }
+    else{
+      menuSound.setMute(false);
+      musicStatus = true;
+      musicToggle.setTexture('BM_5N');
+      musicToggle.setScale(0.16);
+    }
+  }
+
+  disableButtons(){
+    availableButton.forEach((button) => {
+      button.disableInteractive()
+    })
+  }
+
+  activateButtons(){
+    availableButton.forEach((button) => {
+      button.setInteractive()
+    })
+  }
+
+  beatTheGame(begin, isPoinPay){
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let userSession = urlParams.get('session');
+    let requestID = CryptoJS.AES.encrypt('LG'+'+'+gameToken+'+'+Date.now(), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
+    let dataID;
+    let data = {
+      linigame_platform_token: gameToken,
+      session: userSession,
+      game_start: begin,
+      score: 0,
+      user_highscore: 0,
+      total_score: 0,
+    }
+    let datas
+
+    if(isPoinPay === true){
+      data.play_video = 'not_played'
+      //console.log(data);
+      datas = {
+        datas: CryptoJS.AES.encrypt(JSON.stringify(data), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
+      }
+    }
+    else {
+      data.play_video = 'full_played'
+      //console.log(data);
+      datas = {
+        datas: CryptoJS.AES.encrypt(JSON.stringify(data), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
+      }
+    }
+
+    fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/stacko?lang=id", {
+
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'request-id' : requestID
+      },
+      body: JSON.stringify(datas)
     }).then(response => {
 
-      if(response.ok){
-
-        return response.json()
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
       }
-      throw new Error(response.status)
+      else {
+        return response.json();
+      }
+
+    }).then(data => {
+
+      //console.log(data.result);
+      dataID = data.result.id
+      if(dataID !== undefined){
+        this.scene.start("PlayGame", {
+          session: userSession,
+          id: dataID,
+          sound_status: musicStatus,
+          game_score: userData.rule_score
+        });
+      }
+
+    }).catch(error => {
+
+      //console.log(error.result);
+    });
+  }
+
+  challengersInfo(){
+
+    //this.preloadAnimation(360, 450, 0.6, 13, 'PRE_ANIM2');
+    //this.disableButtons();
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let userSession = urlParams.get('session');
+
+    let data = {
+      datas : CryptoJS.AES.encrypt(JSON.stringify({
+        lat: location.latitude,
+        long: location.longitude,
+        session: userSession,
+        linigame_platform_token: gameToken
+      }), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
+    }
+
+    fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/check_user_limit/", {
+
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
+      }
+      else {
+        return response.json();
+      }
+
     }).then(data => {
 
       console.log(data.result);
+      if(data.result.isEmailVerif === true){
+        userData = {
+          rule_score: data.result.gamePoin,
+          free_chance : data.result.lifePlay,
+          poin: data.result.userPoin,
+          phone: '0' + data.result.phone_number.substring(3),
+          email: data.result.email,
+          date_birth: data.result.dob,
+          gender: data.result.gender === 'm' ? 'male' : 'female'
+        }
+        //this.conditionChecking();
+        let startPos = 290
+        for(let i = 1; i <= userData.free_chance; i++){
+          if(i == 1){
+            startPos += 0;
+          }
+          else {
+            startPos += 70;
+          }
+          let life = this.add.image(startPos, 450, 'LIFE').setScale(0.17);
+          life.setOrigin(0.5, 0.5);
+        }
+
+        availableButton = [challengeGate, challengerListSign, challengerGuideSign, challengerContract, musicToggle]
+        //preload.destroy();
+        //this.activateButtons();
+      }
+      else {
+        //this.showDisclaimer('WM_EVW', 0.5)
+      }
+
     }).catch(error => {
 
-      console.error(error.message);
-    })
+      console.log(error);
+      //this.showDisclaimer('WM_SE', 0.5)
+    });
   }
 
-  myIP(){
+  challengerListing(hID, cID, hSC, cSC){
 
-    var ip = false;
-    window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || false;
+    let startPosH = 355
+    let startPosC = 660
+    this.preloadAnimation(360, 690, 1.2, 8, 'PRE_ANIM1');
 
-    if (window.RTCPeerConnection){
-      ip = [];
-      var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
-      pc.createDataChannel('');
-      pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+    fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/leaderboard_imlek?limit_highscore=5&limit_total_score=5&linigame_platform_token="+gameToken, {
 
-      pc.onicecandidate = function(event){
-        if (event && event.candidate && event.candidate.candidate){
-          var s = event.candidate.candidate.split('\n');
-          ip.push(s[0].split(' ')[4]);
+      method: "GET",
+    }).then(response => {
+
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
+      }
+      else {
+        return response.json();
+      }
+
+    }).then(data => {
+
+      //console.log(data.result);
+      for (let i in data.result.highscore_leaderboard){
+        let uNameHi = data.result.highscore_leaderboard[i]["user.name"] !== null ? data.result.highscore_leaderboard[i]["user.name"]: 'No Name';
+
+        if(i == 0){
+          startPosH += 0
         }
+        else {
+          startPosH += 40
+        }
+
+        let shortHID = uNameHi.length > 16 ? uNameHi.substring(0, 16)+'...' : uNameHi
+        hID[i] = this.add.text(170, startPosH, ''+shortHID, {
+          font: '23px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(0, 0.5);
+
+        hSC[i] = this.add.text(550, startPosH, ''+data.result.highscore_leaderboard[i].user_highscore, {
+          font: '23px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'right'
+        }).setOrigin(1, 0.5);
+      }
+
+      for(let i in data.result.totalscore_leaderboard){
+        let uNameCum = data.result.totalscore_leaderboard[i]["user.name"] !== null ? data.result.totalscore_leaderboard[i]["user.name"]: 'No Name';
+
+        if(i == 0){
+          startPosC += 0
+        }
+        else {
+          startPosC += 40
+        }
+
+        let shortCID = uNameCum.length > 16 ? uNameCum.substring(0, 16)+'...' : uNameCum
+        cID[i] = this.add.text(170, startPosC, ''+shortCID, {
+          font: '23px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(0, 0.5);
+
+        cSC[i] = this.add.text(550, startPosC, ''+data.result.totalscore_leaderboard[i].total_score, {
+          font: '23px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(1, 0.5);
+      }
+
+    }).catch(error => {
+
+      //console.log(error.result);
+    });
+  }
+
+  challengerMilestone(sess, rHData, rTData, leave){
+
+    let rankPosConfig = {
+      high_score: {
+        x: 160,
+        y: 965
+      },
+      total_score: {
+        x: 160,
+        y: 1010,
       }
     }
 
-    return ip;
+    fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/get_user_rank_imlek/?session="+sess+"&limit=5&linigame_platform_token="+gameToken, {
+
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
+      }
+      else {
+        return response.json();
+      }
+
+    }).then(data => {
+
+      //console.log(data.result);
+      if(data.result.rank_high_score === 0){
+        rHData.rank = this.add.text(rankPosConfig.high_score.x, rankPosConfig.high_score.y, ''+data.result.rank_high_score, {
+          font: '28px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(0, 0.5)
+        rHData.score = this.add.text(rankPosConfig.high_score.x + 390, rankPosConfig.high_score.y, '0', {
+          font: '25px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'right'
+        }).setOrigin(1, 0.5)
+      }
+      else {
+        rHData.rank = this.add.text(rankPosConfig.high_score.x, rankPosConfig.high_score.y, '#'+data.result.rank_high_score.ranking, {
+          font: '26px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(0, 0.5)
+        rHData.score = this.add.text(rankPosConfig.high_score.x + 390, rankPosConfig.high_score.y, ''+data.result.rank_high_score.user_highscore, {
+          font: '25px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'right'
+        }).setOrigin(1, 0.5)
+      }
+
+      if(data.result.rank_total_score === 0){
+        rTData.rank = this.add.text(rankPosConfig.total_score.x, rankPosConfig.total_score.y, ''+data.result.rank_total_score, {
+          font: '28px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(0, 0.5)
+        rTData.score = this.add.text(rankPosConfig.total_score.x + 390, rankPosConfig.total_score.y, '0', {
+          font: '25px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'right'
+        }).setOrigin(1, 0.5)
+      }
+      else {
+        rTData.rank = this.add.text(rankPosConfig.total_score.x, rankPosConfig.total_score.y, '#'+data.result.rank_total_score.ranking, {
+          font: '26px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'left'
+        }).setOrigin(0, 0.5)
+        rTData.score = this.add.text(rankPosConfig.total_score.x + 390, rankPosConfig.total_score.y, ''+data.result.rank_total_score.total_score, {
+          font: '25px HelveticaRoundedLTStd',
+          fill: '#84446D',
+          align: 'right'
+        }).setOrigin(1, 0.5)
+      }
+
+      leave.setInteractive()
+      preload.destroy();
+    }).catch(error => {
+
+      //console.log(error);
+    });
   }
 
-  playMenu(){
+  adVideoSource(){
 
-    this.disableButtons();
-    var panelgameoptions = this.add.sprite(360,550, 'panel').setScale(1.4);
-    var realplaybutton = this.add.sprite(panelgameoptions.x+170,panelgameoptions.y-30, 'play_button').setScale(0.08);
-    var realadbutton = this.add.sprite(panelgameoptions.x-170,panelgameoptions.y-30, 'ad_button').setScale(0.35);
+    this.connectToSource();
 
-    panelgameoptions.setOrigin(0.5,0.5);
-    realplaybutton.setOrigin(0.5,0.5);
-    realplaybutton.on("pointerdown",() => this.playgame());
+    this.showDisclaimer('DM_ADL', 0.5)
+    this.preloadAnimation(360, 680, 1.3, 8, 'PRE_ANIM1');
+    //this.disableButtons()
 
-    realadbutton.setOrigin(0.5,0.5);
-    realadbutton.setInteractive();
-    realadbutton.on("pointerdown",() => this.playAd());
-  }
+    fetch(urlData.apiCPV_URL+'api/v2/linigames/advertisement?email='+userData.email+'&dob='+userData.date_birth+'&gender='+userData.gender+'&phone_number='+userData.phone,{
 
+      method:'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
 
-  leaderMenu()
-  {
-    this.disableButtons();
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
+      }
+      else {
+        return response.json();
+      }
+    }).then(data => {
 
-    var leader_panel = this.add.sprite(360,580, 'Leaderboard_panel').setScale(3);
-    leader_panel.setOrigin(0.5,0.5);
+      //console.log(data.result);
+      videoProp = {
+        main_source: data.result.main_source,
+        head_source: data.result.header_source,
+        duration: data.result.duration,
+        background_color: data.result.header_bg_color
+      }
 
-    var exit_panel =  this.add.sprite(leader_panel.x+250, leader_panel.y-450, 'Exit').setScale(1);
-    exit_panel.setInteractive();
-    exit_panel.setOrigin(0.5,0.5);
+      this.showTheAd();
+    }).catch(error => {
 
-    exit_panel.on('pointerdown',()=>{
-      leader_panel.destroy();
-      exit_panel.destroy();
-      this.activateButtons();
+      console.error(error);
     })
   }
 
-  instructionMenu()
-  {
-    this.disableButtons();
+  connectToSource(){
 
-    var instruksi_panel = this.add.sprite(360,580, 'Instruksi_panel').setScale(3);
-    instruksi_panel.setOrigin(0.5,0.5);
+    fetch(urlData.apiCPV_URL+'api/v2/linigames/advertisement/connect/53?game_title=linistacko&email='+userData.email+'&dob='+userData.date_birth+'&gender='+userData.gender+'&phone_number='+userData.phone,{
 
-    var exit_panel2 =  this.add.sprite(instruksi_panel.x+250, instruksi_panel.y-450, 'Exit').setScale(1);
-    exit_panel2.setInteractive();
-    exit_panel2.setOrigin(0.5,0.5);
+      method:'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
 
-    exit_panel2.on('pointerdown',()=>{
-      instruksi_panel.destroy();
-      exit_panel2.destroy();
-      this.activateButtons();
+      if(!response.ok){
+        return response.json().then(error => Promise.reject(error));
+      }
+      else {
+        return response.json();
+      }
+    }).then(data => {
+
+      //console.log(data.result);
+    }).catch(error => {
+      console.error(error);
     })
   }
-
-  disableMusic()
-  {
-    if(musicstatus==true)
-    {
-      musicstatus = false;
-      musicButton.setTexture('music_on');
-      musicButton.setScale(0.2);
-    }
-    else
-    {
-      musicstatus = true;
-      musicButton.setTexture('music_off');
-      musicButton.setScale(0.2);
-    }
-  }
-
-  disableButtons()
-  {
-    adButton.disableInteractive();
-    leaderButton.disableInteractive();
-    instruksiButton.disableInteractive();
-    //musicbutton.disableInteractive();
-  }
-
-  activateButtons()
-  {
-    adButton.setInteractive();
-    leaderButton.setInteractive();
-    instruksiButton.setInteractive();
-    //musicbutton.setInteractive();
-  }
-
-
 }

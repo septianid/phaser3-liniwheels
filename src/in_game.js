@@ -39,6 +39,10 @@ var checkpoint_TreshHold;
 var staticTreshHold = 3;
 //////////////////////////////// Semua Function Untuk pengaruhin treshhold
 
+var background;
+var awan1;
+var awan2;
+var awan3;
 
 //var timeBar;
 
@@ -67,18 +71,8 @@ export class InGame extends Phaser.Scene {
   }
 
   preload(){
-
-    // this.load.image('time', './src/assets/time.png');
-    // this.load.image('timebar', './src/assets/time_bar.png');
-    // this.load.image('crate','./src/assets/Crate.png');
-    // this.load.image('Roda','./src/assets/roda.png');
-    // this.load.image('flag','./src/assets/flag.png');
-    // this.load.image('Exit','./src/assets/Exit.png');
-    // this.load.image('Leaderboard','./src/assets/Leaderboard_panel.png');
-    // this.load.image('score','./src/assets/score.png');
-    this.load.json('car', './src/assets/Car.json')
-    this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json')
-    //this.load.image('test_car', './src/assets/MobilTest.png')
+    this.load.json('car', './src/assets/Car.json');
+    this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json');
   }
 
   create(){
@@ -101,6 +95,8 @@ export class InGame extends Phaser.Scene {
     isMoving = false;
 
     this.generatePlayercar(250, 400);
+
+   
 
     // var carJson = this.cache.json.get('car')
     // var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {
@@ -180,7 +176,7 @@ export class InGame extends Phaser.Scene {
     flag = this.add.sprite(0, 220, 'Flag').setScale(2);
     flag.setOrigin(0.5, 0.5);
 
-    final_panel = this.add.sprite(0, 380, 'score').setScale(0.5);
+    final_panel = this.add.sprite(0, 380, 'score').setScale(0.5).setDepth(1);
     final_panel.setOrigin(0.5, 0.5);
 
     this.matter.world.on('collisionstart', (events) =>{
@@ -197,6 +193,14 @@ export class InGame extends Phaser.Scene {
 
     // checkpoint_TreshHold = Phaser.Math.Between(minimumTreshHold, maximumTreshHold);// INI juga jangan dihapus
     checkpoint_TreshHold = staticTreshHold;
+    background = this.add.image(0,280,'bangunan').setScale(1).setDepth(-1000);
+    background.setOrigin(0,0);
+
+    awan1 = this.add.sprite(250, 50, 'cloud1').setScale(2).setDepth(-500).setOrigin(0,0);
+    awan2 = this.add.sprite(60, 130, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
+    awan3 = this.add.sprite(670, 170, 'cloud3').setScale(1).setDepth(-500).setOrigin(0,0);
+
+    
   }
 
   update(){
@@ -298,6 +302,7 @@ export class InGame extends Phaser.Scene {
 
     flag.x = this.cameras.main.scrollX+this.game.config.width/2;
     final_panel.x = this.cameras.main.scrollX+this.game.config.width/2;
+    background.x = this.cameras.main.scrollX-220;
     graphics.x = this.cameras.main.scrollX + 210;
 
     if(gameOption.timeConfig > 0){
@@ -321,7 +326,25 @@ export class InGame extends Phaser.Scene {
       final_panel.visible = true;
     }//syarat penampilan final panel score
     //console.log(syaratfinalscore);
+    /////////////////////////////////////////////////
+    if(awan1.x<this.cameras.main.scrollX-230)
+    {
+      awan1.x = this.cameras.main.scrollX+650;
+    }
+
+    if(awan2.x<this.cameras.main.scrollX-100)
+    {
+      awan2.x = this.cameras.main.scrollX+650;
+    }
+
+    if(awan3.x<this.cameras.main.scrollX-100)
+    {
+      awan3.x = this.cameras.main.scrollX+650;
+    }
+    //////////////////////////////////////////////// Fungsi Kasar Awan
   }
+
+  
 
   generatePlayercar(posX, posY){
 
@@ -353,7 +376,7 @@ export class InGame extends Phaser.Scene {
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(0.09);
+    }).setScale(0.09).setDepth(1);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
@@ -426,11 +449,9 @@ export class InGame extends Phaser.Scene {
     //console.log("APPEAR");
   }
 
-  checkpoint(distanceTreshold){
-    if(tresholdValue % 30 == 0 && tresholdValue != 0){
-      //console.log("Testing Berhasil")
-    }
-  }//function checkpoint
+  
+    
+  
 
 
   terrainGeneration(graphics, start){
