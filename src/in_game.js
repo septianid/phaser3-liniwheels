@@ -7,7 +7,7 @@ var checkpointSpawn;
 //////////////////////////////// Storage untuk penyimpanan body dan Rock untuk random generated assets//
 var terrainGraphics;
 var startLine;
-var isWheelCollide;
+//var isWheelCollide;
 /////////////////////////////// Variable Generate Mountain//
 var tresholdTime;
 var timeUi;
@@ -18,21 +18,20 @@ let cartwheelRear;
 ////////////////////////////// Cart Structure generation
 let bodies;
 var isMoving;
+var isFalling;
 var canMoving;
 
-var syaratfinalscore;
 var final_panel_appear;
 var final_panel;
 var flag;
-var syaratspawn;
-var berhenti;
-
+//var syaratspawn;
+//var berhenti;
 var distanceTreshold;
 var distanceSpawn;
 var distanceUi;
 var tresholdValue;
 var distanceConvertString;
-var graphics;
+var timeBar;
 var checkpoint_TreshHold;
 var maximumTreshHold = 10;
 var minimumTreshHold = 0;
@@ -44,12 +43,15 @@ var awan1;
 var awan2;
 var awan3;
 
-//var timeBar;
-
 var scoreUi;
 var valueScore;
 var infoTextui;
+var playLog = []
 var gameData = {}
+var executeOnce = {
+  isTimeOut: 1,
+  isDrop: 1
+};
 var gameOption = {
   timeConfig: 30,
   mountainTotal : 3,
@@ -93,10 +95,8 @@ export class InGame extends Phaser.Scene {
     checkpointSpawn = [];
     distanceTreshold = false;
     startLine = new Phaser.Math.Vector2(-200, Math.random());
-    syaratspawn = 0;
-    berhenti = 0;
-    //syaratfinalscore = 0;
-    syaratfinalscore = 1;
+    //syaratspawn = 0;
+    //berhenti = 0;
     for(let i = 0; i < gameOption.mountainTotal; i++){
 
       terrainGraphics[i] =  this.add.graphics();
@@ -106,8 +106,6 @@ export class InGame extends Phaser.Scene {
     isMoving = false;
 
     this.generatePlayercar(250, 400);
-
-
 
     // var carJson = this.cache.json.get('car')
     // var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {
@@ -131,9 +129,9 @@ export class InGame extends Phaser.Scene {
     // timeBar = this.add.sprite(0, 100, 'timebar').setOrigin(0, 0.5);
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
-    graphics = this.add.graphics(0, 100)
-    graphics.fillStyle(0x8b0000, 1);
-    graphics.fillRect(0, 60, 300, 15);
+    timeBar = this.add.graphics(0, 100)
+    timeBar.fillStyle(0x8b0000, 1);
+    timeBar.fillRect(0, 60, 300, 15);
     //console.log(graphics);
 
     tresholdValue = 0;
@@ -176,7 +174,6 @@ export class InGame extends Phaser.Scene {
     this.input.on("pointerdown", () => this.accelerateCar());
     this.input.on("pointerup", () => this.decelerateCar());
 
-    //tresholdTime = this.time.delayedCall(30000, this.restart(),[],this);
     tresholdTime = this.time.addEvent({
       delay: 1000,
       callback: this.timeEvent,
@@ -190,24 +187,26 @@ export class InGame extends Phaser.Scene {
     final_panel = this.add.sprite(0, 380, 'score').setScale(0.5).setDepth(1);
     final_panel.setOrigin(0.5, 0.5);
 
+    isFalling = false
+
     this.matter.world.on('collisionstart', (events) =>{
       events.pairs.forEach((pair) => {
         const {bodyA, bodyB} = pair;
+
         if((bodyA.label == 'cargo' && bodyB.label != 'car') || (bodyB.label == 'cargo' && bodyA.label != 'car')){
-          final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
-          graphics.scaleX = 0;
+          isFalling = true
+          canMoving = false
+          timeBar.scaleX = 0;
           tresholdTime.remove(false)
-          console.log('Drop');
-          //isMoving = false;
-          //this.input.on("pointerdown", () => this.decelerateCar());
+          //final_panel_appear = this.time.addEvent({delay: 1000, callback: this.appear(true), callbackScope: this});//function untuk tampilin pake delay
         }
       })
     });// function object collision
 
     // checkpoint_TreshHold = Phaser.Math.Between(minimumTreshHold, maximumTreshHold);// INI juga jangan dihapus
     checkpoint_TreshHold = staticTreshHold;
-    background = this.add.image(0,280,'bangunan').setScale(1).setDepth(-1000);
-    background.setOrigin(0,0);
+    background = this.add.image(0, 280,'bangunan').setScale(1).setDepth(-1000);
+    background.setOrigin(0, 0);
 
     awan1 = this.add.sprite(250, 50, 'cloud1').setScale(2).setDepth(-500).setOrigin(0,0);
     awan2 = this.add.sprite(60, 130, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
@@ -264,6 +263,14 @@ export class InGame extends Phaser.Scene {
       if (distanceTreshold === false) {
         distanceTreshold = true;
         valueScore += 1;
+
+        let time = new Date()
+        playLog.push({
+          time: time,
+          score: valueScore,
+          distance: tresholdValue,
+          fail_type: null
+        })
         ////////////////////////////////
               // minimumTreshHold = minimumTreshHold+5;
               // maximumTreshHold = maximumTreshHold+5;
@@ -273,12 +280,10 @@ export class InGame extends Phaser.Scene {
         /////////////////////////////// Dynamic Checkpoint Treshhold
         staticTreshHold = staticTreshHold + 3;
         checkpoint_TreshHold = staticTreshHold;
-        //console.log(staticTreshHold - 2);
 
         gameOption.timeConfig += (staticTreshHold - 2)
-        graphics.scaleX += ((1 / 30) * (staticTreshHold - 2))
+        timeBar.scaleX += ((1 / 30) * (staticTreshHold - 2))
         /////////////////////////////// Static Checkpoint TreshHold
-
       }
       else {
         valueScore += 0;
@@ -289,12 +294,14 @@ export class InGame extends Phaser.Scene {
     }
 
     if(distanceSpawn  == checkpoint_TreshHold && tresholdValue != 0){
-      //this.SpawningSystem();
-      //console.log("Masuk");
       flag.visible = true;//fungsi nampilin checkpoint
     }
 
     //this.checkpoint(distanceTreshold);
+    //timeBar.x = this.cameras.main.scrollX + 220;
+    //timeBar.scaleX -= 0.002;
+    // timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
+    // timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
     distanceSpawn = Math.floor(this.cameras.main.scrollX/100);
@@ -302,36 +309,31 @@ export class InGame extends Phaser.Scene {
     distanceUi.x = this.cameras.main.scrollX + 80;
     distanceUi.setText('' + tresholdValue);
 
-
-    //timeBar.x = this.cameras.main.scrollX + 220;
-    //timeBar.scaleX -= 0.002;
-
     infoTextui.x = this.cameras.main.scrollX + 640;
     scoreUi.x = this.cameras.main.scrollX + 640;
     scoreUi.setText(''+valueScore);
 
-    // timeUi.setText('Timer: ' + tresholdTime.getProgress().toString().substr(0,4));
-    // timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
+    flag.x = this.cameras.main.scrollX + this.game.config.width / 2;
+    final_panel.x = this.cameras.main.scrollX + this.game.config.width / 2;
+    background.x = this.cameras.main.scrollX - 220;
+    timeBar.x = this.cameras.main.scrollX + 210;
 
-    flag.x = this.cameras.main.scrollX+this.game.config.width/2;
-    final_panel.x = this.cameras.main.scrollX+this.game.config.width/2;
-    background.x = this.cameras.main.scrollX-220;
-    graphics.x = this.cameras.main.scrollX + 210;
-
-    if(gameOption.timeConfig > 0){
+    if(gameOption.timeConfig > 0 && isFalling === false){
       canMoving = true;
-      //console.log(1 / tresholdTimeEnd);
-      //graphics.scaleX = (1 - tresholdTime.getProgress()) * 2;
-      //graphics.scaleX = (1 / tresholdTimeEnd)
+    }
+    else if (gameOption.timeConfig > 0 && isFalling === true) {
+      if(executeOnce.isDrop === 1){
+        this.gameEndData('BOX DROP')
+        executeOnce.isDrop = 0;
+      }
+      else {
+
+      }
     }
     else {
-      if(syaratfinalscore === 1){
-        //final_panel_appear = this.time.delayedCall(7000,this.appear(),[],this);
-        isMoving = false;
-        tresholdTime.remove(false)
-        syaratfinalscore = 0
-        final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});//function untuk tampilin pake delay
-        console.log('Time Out');
+      if(executeOnce.isTimeOut === 1){
+        this.gameEndData('TIME OUT')
+        executeOnce.isTimeOut = 0
       }
       else {
 
@@ -340,24 +342,21 @@ export class InGame extends Phaser.Scene {
 
     if(gameOption.timeConfig > 30){
       gameOption.timeConfig = 30
-      graphics.scaleX = 1
+      timeBar.scaleX = 1
     }
     //syarat penampilan final panel score
 
     /////////////////////////////////////////////////
-    if(awan1.x<this.cameras.main.scrollX-230)
-    {
-      awan1.x = this.cameras.main.scrollX+650;
+    if(awan1.x < this.cameras.main.scrollX - 230){
+      awan1.x = this.cameras.main.scrollX + 650;
     }
 
-    if(awan2.x<this.cameras.main.scrollX-100)
-    {
-      awan2.x = this.cameras.main.scrollX+650;
+    if(awan2.x < this.cameras.main.scrollX - 100){
+      awan2.x = this.cameras.main.scrollX + 650;
     }
 
-    if(awan3.x<this.cameras.main.scrollX-100)
-    {
-      awan3.x = this.cameras.main.scrollX+650;
+    if(awan3.x < this.cameras.main.scrollX - 100){
+      awan3.x = this.cameras.main.scrollX + 650;
     }
     //////////////////////////////////////////////// Fungsi Kasar Awan
   }
@@ -366,7 +365,7 @@ export class InGame extends Phaser.Scene {
 
   generatePlayercar(posX, posY){
 
-    let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY-40, 110, 20, {
+    let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY - 40, 110, 20, {
       label: 'car',
     });
     let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 55, posY - 65, 20, 30, {
@@ -389,8 +388,7 @@ export class InGame extends Phaser.Scene {
     this.matter.world.add(cartStructure);
     //console.log(posX);
 
-    cargo = this.matter.add.sprite(posX, posY - 100, 'crate', 0, {
-
+    cargo = this.matter.add.sprite(posX, posY - 100, 'CRATE', 0, {
       label: 'cargo',
       friction: 1,
       restitution: 0,
@@ -449,26 +447,37 @@ export class InGame extends Phaser.Scene {
   }
 
   timeEvent(){
-    graphics.scaleX -= (1 / 30)
+    timeBar.scaleX -= (1 / 30)
     gameOption.timeConfig--
     //console.log(gameOption.timeConfig);
     if(gameOption.timeConfig <= 0){
       gameOption.timeConfig = 0
-      graphics.scaleX = 0
+      timeBar.scaleX = 0
       tresholdTime.remove(false)
     }
     //Phaser.Physics.Arcade.isPaused = true;
   }
 
-  appear(){
-    //isMoving = false
-    final_panel.visible = true;
-    final_panel_appear.remove(false)
-
+  gameEndData(type){
     let timeOver = new Date()
+    playLog.push({
+      time: timeOver,
+      score: valueScore,
+      distance: tresholdValue,
+      fail_type: type
+    })
+
     this.gameOver(timeOver)
-    //final_panel.visible = true;
-    //console.log("APPEAR");
+    canMoving = false
+    tresholdTime.remove(false)
+    final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});
+
+    //console.log(playLog);
+  }
+
+  appear(){
+    //console.log(playLog);
+    final_panel.visible = true;
   }
 
   terrainGeneration(graphics, start){
@@ -527,7 +536,6 @@ export class InGame extends Phaser.Scene {
     graphics.fillStyle(0x654b35);
     graphics.beginPath();
     simpleSlope.forEach((point) => {
-
       graphics.lineTo(point.x, point.y);
     });
     graphics.lineTo(pointX, this.game.config.height);
@@ -644,7 +652,7 @@ export class InGame extends Phaser.Scene {
       game_end: over,
       score: valueScore,
       id: gameData.id,
-      //log: userLog
+      log: playLog
     }
     //console.log(data);
     let datas = {
