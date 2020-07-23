@@ -65,7 +65,7 @@ export class Menu extends Phaser.Scene {
     // }
 
     urlData = {
-      apiLP_URL: 'https://3fa78f869bdf.ngrok.io/',             //// DEVELOPMENT-LOCAL
+      apiLP_URL: 'https://53a126dc8a7c.ngrok.io/',             //// DEVELOPMENT-LOCAL
       apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     }
     gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
@@ -95,26 +95,26 @@ export class Menu extends Phaser.Scene {
     challengerContract.on("pointerdown",() => this.showTheContract())
 
 
-    // if(musicStatus === true){
-    //   menuSound.setMute(false)
-    //   musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5N').setScale(0.16);
-    //   musicToggle.setOrigin(0.5,0.5);
-    // }
-    // else{
-    //   menuSound.setMute(true)
-    //   musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5F').setScale(0.16);
-    //   musicToggle.setOrigin(0.5,0.5);
-    // }
-    //
-    // musicToggle.on('pointerdown', () => this.disableMusic());
-    //
-    // this.game.events.on('hidden',function(){
-    //   menuSound.setMute(true);
-    // },this);
-    //
-    // this.game.events.on('visible', function(){
-    //   menuSound.setMute(false);
-    // });
+    if(musicStatus === true){
+      //menuSound.setMute(false)
+      musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5N').setScale(0.16);
+      musicToggle.setOrigin(0.5,0.5);
+    }
+    else{
+      //menuSound.setMute(true)
+      musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5F').setScale(0.16);
+      musicToggle.setOrigin(0.5,0.5);
+    }
+
+    musicToggle.on('pointerdown', () => this.disableMusic());
+
+    this.game.events.on('hidden',function(){
+      //menuSound.setMute(true);
+    },this);
+
+    this.game.events.on('visible', function(){
+      //menuSound.setMute(false);
+    });
   }
 
   update(){
@@ -124,7 +124,7 @@ export class Menu extends Phaser.Scene {
 
   conditionChecking(){
 
-    clickSound.play()
+    //clickSound.play()
     this.disableButtons()
     if(userData.free_chance != 0){
       let timeStart = new Date()
@@ -158,7 +158,7 @@ export class Menu extends Phaser.Scene {
     poinPayOption.setOrigin(0.5,0.5);
     poinPayOption.setInteractive();
     poinPayOption.on('pointerdown', () => {
-      clickSound.play()
+      //clickSound.play()
       poinPayOption.disableInteractive()
       adWatchPayOption.disableInteractive()
       changeMind.disableInteractive()
@@ -174,7 +174,7 @@ export class Menu extends Phaser.Scene {
     adWatchPayOption.setOrigin(0.5,0.5);
     adWatchPayOption.setInteractive();
     adWatchPayOption.on("pointerdown",() => {
-      clickSound.play()
+      //clickSound.play()
       poinPayOption.disableInteractive()
       adWatchPayOption.disableInteractive()
       changeMind.disableInteractive()
@@ -262,8 +262,8 @@ export class Menu extends Phaser.Scene {
     confirmChoice.setDepth(1)
     confirmChoice.setInteractive();
     confirmChoice.on('pointerdown', () => {
-      clickSound.play()
-      this.preloadAnimation(360, 490, 1.0, 8, 'PRE_ANIM1');
+      //clickSound.play()
+      //this.preloadAnimation(360, 490, 1.0, 8, 'PRE_ANIM1');
       let timeStart;
       timeStart = new Date();
       this.beatTheGame(timeStart, true)
@@ -275,7 +275,7 @@ export class Menu extends Phaser.Scene {
     denyChoice.setDepth(1)
     denyChoice.setInteractive();
     denyChoice.on('pointerdown', () => {
-      clickSound.play()
+      //clickSound.play()
       poinPayOption.setInteractive()
       adWatchPayOption.setInteractive()
 
@@ -564,7 +564,7 @@ export class Menu extends Phaser.Scene {
       }
     }
 
-    fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/stacko?lang=id", {
+    fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/wheels?lang=id", {
 
       method: "POST",
       headers: {
@@ -584,14 +584,16 @@ export class Menu extends Phaser.Scene {
 
     }).then(data => {
 
-      //console.log(data.result);
+      console.log(data.result);
       dataID = data.result.id
       if(dataID !== undefined){
-        this.scene.start("PlayGame", {
+        this.scene.start("Game", {
           session: userSession,
           id: dataID,
           sound_status: musicStatus,
-          game_score: userData.rule_score
+          game_score: userData.rule_score,
+          game_apiURL: urlData.apiLP_URL,
+          game_token: gameToken
         });
       }
 
@@ -604,7 +606,7 @@ export class Menu extends Phaser.Scene {
   challengersInfo(){
 
     //this.preloadAnimation(360, 450, 0.6, 13, 'PRE_ANIM2');
-    //this.disableButtons();
+    this.disableButtons();
 
     let urlParams = new URLSearchParams(window.location.search);
     let userSession = urlParams.get('session');
@@ -663,7 +665,7 @@ export class Menu extends Phaser.Scene {
 
         availableButton = [challengeGate, challengerListSign, challengerGuideSign, challengerContract, musicToggle]
         //preload.destroy();
-        //this.activateButtons();
+        this.activateButtons();
       }
       else {
         //this.showDisclaimer('WM_EVW', 0.5)
