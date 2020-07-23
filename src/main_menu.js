@@ -59,15 +59,15 @@ export class Menu extends Phaser.Scene {
     //   apiCPV_URL: 'https://captive.macroad.co.id/',
     // }
     //
-    // urlData = {
-    //   apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
-    //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
-    // }
-
     urlData = {
-      apiLP_URL: 'https://53a126dc8a7c.ngrok.io/',             //// DEVELOPMENT-LOCAL
+      apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
       apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     }
+
+    // urlData = {
+    //   apiLP_URL: 'https://53a126dc8a7c.ngrok.io/',             //// DEVELOPMENT-LOCAL
+    //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
+    // }
     gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
 
     this.challengersInfo();
@@ -584,7 +584,7 @@ export class Menu extends Phaser.Scene {
 
     }).then(data => {
 
-      console.log(data.result);
+      //console.log(data.result);
       dataID = data.result.id
       if(dataID !== undefined){
         this.scene.start("Game", {
@@ -639,7 +639,7 @@ export class Menu extends Phaser.Scene {
 
     }).then(data => {
 
-      console.log(data.result);
+      //console.log(data.result);
       if(data.result.isEmailVerif === true){
         userData = {
           rule_score: data.result.gamePoin,

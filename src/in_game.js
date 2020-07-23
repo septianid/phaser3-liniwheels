@@ -92,7 +92,7 @@ export class InGame extends Phaser.Scene {
     this.load.json('Wheel','./src/assets/Roda_Collider.json');
     this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
 
-    
+
   }
 
   create(){
@@ -131,7 +131,7 @@ export class InGame extends Phaser.Scene {
     //   shape : WheelJson.Roda_Sheet
     // }).setScale(0.2);
 
-    
+
     // var Roda3 = this.matter.add.sprite(360,670,'Wheel_Sheet','roda2.png',{
     //   shape : WheelJson.Roda_Sheet
     // }).setScale(0.2);
@@ -403,24 +403,21 @@ export class InGame extends Phaser.Scene {
     //   label: 'car',
     // });
 
-    let badanmobil = this.matter.add.sprite(posX,posY,'Kart_Sheet','Kart.png',{
+    let badanmobil
+    badanmobil = this.matter.add.sprite(posX, posY,'Kart_Sheet', 'Kart.png',{
         shape : carJson.Kart_Sheet,
         label: 'car'
-       }).setScale(0.2);
+    }).setScale(0.2);
 
-    
-
+    console.log(badanmobil);
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
-      parts: [badanmobil],
+      parts: [badanmobil.body],
       friction: 1,
       restitution: 0,
     });
-    console.log(cartStructure);
 
-    
-
-    this.matter.world.add(cartStructure);
+    //this.matter.world.add(cartStructure);
     //console.log(posX);
 
     cargo = this.matter.add.sprite(posX, posY - 100, 'crate', 0, {
