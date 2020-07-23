@@ -73,6 +73,14 @@ export class InGame extends Phaser.Scene {
   preload(){
     this.load.json('car', './src/assets/Car.json');
     this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json');
+
+    this.load.json('Kart','./src/assets/Kart_Collider.json');
+    this.load.atlas('Kart_Sheet','./src/assets/Kart_Sheet.png','./src/assets/Kart_Sheet.json');
+
+    this.load.json('Wheel','./src/assets/Roda_Collider.json');
+    this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
+
+    
   }
 
   create(){
@@ -103,6 +111,22 @@ export class InGame extends Phaser.Scene {
     //   shape: carJson.MobilTest
     // }).setScale(0.2)
     // console.log();// fungsi Badan jangan diapus
+
+    // var carJson = this.cache.json.get('Kart');
+    // var mobil = this.matter.add.sprite(360,640,'Kart_Sheet','Kart.png',{
+    //   shape : carJson.Kart_Sheet
+    // }).setScale(0.2);
+
+    // var WheelJson = this.cache.json.get('Wheel');
+    // var Roda2 = this.matter.add.sprite(360,640,'Wheel_Sheet','roda2.png',{
+    //   shape : WheelJson.Roda_Sheet
+    // }).setScale(0.2);
+
+    
+    // var Roda3 = this.matter.add.sprite(360,670,'Wheel_Sheet','roda2.png',{
+    //   shape : WheelJson.Roda_Sheet
+    // }).setScale(0.2);
+
 
     // this.matter.world.on('collisionactive', (e) => {
     //
@@ -197,7 +221,7 @@ export class InGame extends Phaser.Scene {
     background.setOrigin(0,0);
 
     awan1 = this.add.sprite(250, 50, 'cloud1').setScale(2).setDepth(-500).setOrigin(0,0);
-    awan2 = this.add.sprite(60, 130, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
+    awan2 = this.add.sprite(60, 150, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
     awan3 = this.add.sprite(670, 170, 'cloud3').setScale(1).setDepth(-500).setOrigin(0,0);
 
     
@@ -327,19 +351,25 @@ export class InGame extends Phaser.Scene {
     }//syarat penampilan final panel score
     //console.log(syaratfinalscore);
     /////////////////////////////////////////////////
-    if(awan1.x<this.cameras.main.scrollX-230)
+    awan1.x -=0.5;
+    awan2.x -=2;
+    awan3.x -=1;
+
+
+
+    if(awan1.x<this.cameras.main.scrollX-275)
     {
-      awan1.x = this.cameras.main.scrollX+650;
+      awan1.x = this.cameras.main.scrollX+720;
     }
 
-    if(awan2.x<this.cameras.main.scrollX-100)
+    if(awan2.x<this.cameras.main.scrollX-135)
     {
-      awan2.x = this.cameras.main.scrollX+650;
+      awan2.x = this.cameras.main.scrollX+670;
     }
 
-    if(awan3.x<this.cameras.main.scrollX-100)
+    if(awan3.x<this.cameras.main.scrollX-135)
     {
-      awan3.x = this.cameras.main.scrollX+650;
+      awan3.x = this.cameras.main.scrollX+670;
     }
     //////////////////////////////////////////////// Fungsi Kasar Awan
   }
@@ -348,44 +378,54 @@ export class InGame extends Phaser.Scene {
 
   generatePlayercar(posX, posY){
 
-    let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY-40, 110, 20, {
-      label: 'car',
-    });
-    let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 55, posY - 65, 20, 30, {
-      label: 'car',
-    });
-    let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 65, 20, 30,{
-      label: 'car',
-    });
-    let badanmobil = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 150, 50,{
-      label: 'car',
-    });
+    var carJson = this.cache.json.get('Kart');
+    // let container_floor = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY-40, 110, 20, {
+    //   label: 'car',
+    // });
+    // let container_left_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX - 55, posY - 65, 20, 30, {
+    //   label: 'car',
+    // });
+    // let container_right_wall = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX + 55, posY - 65, 20, 30,{
+    //   label: 'car',
+    // });
+    // let badanmobil = Phaser.Physics.Matter.Matter.Bodies.rectangle(posX, posY, 150, 50,{
+    //   label: 'car',
+    // });
+
+    let badanmobil = this.matter.add.sprite(posX,posY,'Kart_Sheet','Kart.png',{
+        shape : carJson.Kart_Sheet,
+        label: 'car'
+       }).setScale(0.2);
+
+    
 
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
-      parts: [container_floor, container_left_wall, container_right_wall,badanmobil],
+      parts: [badanmobil],
       friction: 1,
       restitution: 0,
     });
+    console.log(cartStructure);
+
+    
 
     this.matter.world.add(cartStructure);
     //console.log(posX);
 
     cargo = this.matter.add.sprite(posX, posY - 100, 'crate', 0, {
-
       label: 'cargo',
       friction: 1,
       restitution: 0,
     }).setScale(0.09).setDepth(1);
 
 
-    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda').setScale(0.37);
+    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Wheel_Sheet').setScale(0.37);
     cartwheelFront.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
       restitution: 0,
     });
-    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 25, 'Roda').setScale(0.37);
+    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 25, 'Wheel_Sheet').setScale(0.37);
     cartwheelRear.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
