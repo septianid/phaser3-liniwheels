@@ -92,6 +92,8 @@ export class InGame extends Phaser.Scene {
     this.load.json('Wheel','./src/assets/Roda_Collider.json');
     this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
 
+    this.load.image('Roda_Test','./src/assets/roda3.png');
+
 
   }
 
@@ -417,23 +419,23 @@ export class InGame extends Phaser.Scene {
       restitution: 0,
     });
 
-    this.matter.world.add(cartStructure);
+    this.matter.world.add(badanmobil.body);
     //console.log(posX);
 
-    cargo = this.matter.add.sprite(posX, posY - 100, 'crate', 0, {
+    cargo = this.matter.add.sprite(posX, posY - 100, 'CRATE', 0, {
       label: 'cargo',
       friction: 1,
       restitution: 0,
     }).setScale(0.09).setDepth(1);
 
 
-    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Wheel_Sheet').setScale(0.37);
+    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 25, 'Roda_Test').setScale(0.37);
     cartwheelFront.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
       restitution: 0,
     });
-    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 25, 'Wheel_Sheet').setScale(0.37);
+    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 25, 'Roda_Test').setScale(0.37);
     cartwheelRear.setCircle(20, {
       label: 'wheel',
       friction: 0.5,
@@ -441,31 +443,31 @@ export class InGame extends Phaser.Scene {
     });
     //console.log(rearWheel);
 
-    this.matter.add.constraint(cartStructure, cartwheelFront, 30, 0, {
+    this.matter.add.constraint(badanmobil.body, cartwheelFront, 100, 0, {
       pointA:{
         x: 50,
-        y: 35
+        y: -35
       }
     });
 
-    this.matter.add.constraint(cartStructure, cartwheelFront, 30, 0, {
+    this.matter.add.constraint(badanmobil.body, cartwheelFront, 100, 0, {
       pointA:{
         x: 70,
-        y: 35
+        y: -35
       }
     });
 
-    this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
+    this.matter.add.constraint(badanmobil.body, cartwheelRear, 100, 0, {
       pointA:{
         x: -50,
-        y: 35
+        y: -35
       }
     });
 
-    this.matter.add.constraint(cartStructure, cartwheelRear, 30, 0, {
+    this.matter.add.constraint(badanmobil.body, cartwheelRear, 100, 0, {
       pointA:{
         x: -70,
-        y: 35
+        y: -35
       }
     });
   }
