@@ -23,7 +23,7 @@ const config = {
     width: 720,
     height: 1280,
   },
-  scene: [Loading, Menu, InGame],
+  scene: [Loading,Menu,InGame],
   audio: {
     disableWebAudio: true,
   }

@@ -407,7 +407,7 @@ export class InGame extends Phaser.Scene {
     badanmobil = this.matter.add.sprite(posX, posY,'Kart_Sheet', 'Kart.png',{
         shape : carJson.Kart_Sheet,
         label: 'car'
-    }).setScale(0.2);
+    }).setScale(0.3);
 
     console.log(badanmobil);
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
@@ -417,7 +417,7 @@ export class InGame extends Phaser.Scene {
       restitution: 0,
     });
 
-    //this.matter.world.add(cartStructure);
+    this.matter.world.add(cartStructure);
     //console.log(posX);
 
     cargo = this.matter.add.sprite(posX, posY - 100, 'crate', 0, {
