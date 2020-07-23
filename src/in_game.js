@@ -42,7 +42,9 @@ var background;
 var awan1;
 var awan2;
 var awan3;
-
+var finalScoreText
+var latestHighScoreText
+var exitButton;
 var scoreUi;
 var valueScore;
 var infoTextui;
@@ -83,16 +85,10 @@ export class InGame extends Phaser.Scene {
   }
 
   preload(){
-    this.load.json('car', './src/assets/Car.json');
-    this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json');
-
-    this.load.json('Kart','./src/assets/Kart_Collider.json');
-    this.load.atlas('Kart_Sheet','./src/assets/Kart_Sheet.png','./src/assets/Kart_Sheet.json');
-
-    this.load.json('Wheel','./src/assets/Roda_Collider.json');
-    this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
-
-    this.load.image('Roda_Test','./src/assets/roda3.png');
+    // this.load.json('car', './src/assets/Car.json');
+    // this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json');
+    // this.load.json('Wheel','./src/assets/Roda_Collider.json');
+    // this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
   }
 
   create(){
@@ -162,13 +158,13 @@ export class InGame extends Phaser.Scene {
 
     distanceSpawn = 5;
     distanceConvertString = this.add.text(0, 30, 'DISTANCE', {
-      font: 'bold 26px Arial',
+      font: '26px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
     distanceUi = this.add.text(0, 70, '0', {
-      font: 'bold 42px Arial',
+      font: '42px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
@@ -176,17 +172,31 @@ export class InGame extends Phaser.Scene {
     valueScore = 0;
     infoTextui = this.add.text(0, 30, 'SCORE' ,{
 
-      font: 'bold 26px Arial',
+      font: '26px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
     scoreUi = this.add.text(0, 70, '' + valueScore, {
 
-      font: 'bold 42px Arial',
+      font: '42px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
+
+    finalScoreText = this.add.text(0, 570, '0', {
+      font: '64px FredokaOne',
+      fill: '#FFFFFF',
+    }).setOrigin(0.5, 0.5)
+    finalScoreText.setDepth(1)
+    finalScoreText.visible = false
+
+    latestHighScoreText = this.add.text(0, 720, '0', {
+      font: '64px FredokaOne',
+      fill: '#FFFFFF',
+    }).setOrigin(0.5, 0.5)
+    latestHighScoreText.setDepth(1)
+    latestHighScoreText.visible = false
 
     // timeUi = this.add.text(0,150,''+tresholdTime,{
     //   font: 'bold 42px Arial',
@@ -208,8 +218,14 @@ export class InGame extends Phaser.Scene {
     flag = this.add.sprite(0, 220, 'Flag').setScale(2);
     flag.setOrigin(0.5, 0.5);
 
-    final_panel = this.add.sprite(0, 380, 'score').setScale(0.5).setDepth(1);
+    exitButton = this.add.sprite(360, 820, 'BG_GO').setScale(0.45)
+    exitButton.setOrigin(0.5, 0.5)
+    exitButton.setDepth(1)
+    exitButton.visible = false
+
+    final_panel = this.add.sprite(360, 640, 'DG_GO').setScale(0.5);
     final_panel.setOrigin(0.5, 0.5);
+    final_panel.visible = false; //set visibility untuk final score
 
     isFalling = false
 
@@ -241,7 +257,6 @@ export class InGame extends Phaser.Scene {
 
   update(){
 
-    final_panel.visible = false; //set visibility untuk final score
     flag.visible = false; //set visibility untuk checkpoint
     this.cameras.main.scrollX = badanmobil.body.position.x - this.game.config.width / 8;
     if(isMoving){
@@ -339,6 +354,9 @@ export class InGame extends Phaser.Scene {
 
     flag.x = this.cameras.main.scrollX + this.game.config.width / 2;
     final_panel.x = this.cameras.main.scrollX + this.game.config.width / 2;
+    finalScoreText.x = this.cameras.main.scrollX + this.game.config.width / 2
+    exitButton.x = this.cameras.main.scrollX + this.game.config.width / 2
+    latestHighScoreText.x = this.cameras.main.scrollX + this.game.config.width / 2
     background.x = this.cameras.main.scrollX - 220;
     timeBar.x = this.cameras.main.scrollX + 210;
 
@@ -407,7 +425,7 @@ export class InGame extends Phaser.Scene {
         label: 'Kart_Sheet'
     }).setScale(0.3);
 
-    console.log(badanmobil);
+    //console.log(badanmobil);
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
       parts: [badanmobil.body],
@@ -497,17 +515,20 @@ export class InGame extends Phaser.Scene {
       fail_type: type
     })
 
+    final_panel.visible = true;
+    finalScoreText.visible = true;
+    finalScoreText.setText(''+valueScore)
+
     this.gameOver(timeOver)
     canMoving = false
     tresholdTime.remove(false)
-    final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});
+    //final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});
 
     //console.log(playLog);
   }
 
   appear(){
-    //console.log(playLog);
-    final_panel.visible = true;
+    //console.log(finalScoreText);
   }
 
   terrainGeneration(graphics, start){
@@ -708,7 +729,19 @@ export class InGame extends Phaser.Scene {
       }
 
     }).then(data => {
-      console.log(data.result);
+      //console.log(data.result);
+      latestHighScoreText.visible = true
+      latestHighScoreText.setDepth(1)
+      latestHighScoreText.setText(''+data.result.user_highscore)
+      exitButton.visible = true
+      exitButton.setInteractive()
+      exitButton.on('pointerdown', () => {
+
+        this.scene.start('MainMenu', {
+          sound_status: gameData.sound,
+        });
+        playLog = []
+      })
     }).catch(error => {
       console.log(error.result);
     });
