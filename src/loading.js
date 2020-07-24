@@ -50,7 +50,6 @@ export class Loading extends Phaser.Scene{
     this.load.image('DM_ADL', './src/assets/DM_ADL.png')
     this.load.image('WM_EVW', './src/assets/WM_EVW.png');
     this.load.image('WM_SE', './src/assets/WM_SE.png');
-
 //////////////////////////////////////////////////////////////////Atas Dummy Assets bawah real assets
 
     //this.load.image('time', './src/assets/time.png');
@@ -118,7 +117,6 @@ export class Loading extends Phaser.Scene{
     // assetText.setOrigin(0.5, 0.5);
     this.load.once('loaderror', function (file) {
       isError = true;
-      //console.log('error load ');
     })
 
     this.load.on('progress', function (value) {
@@ -130,11 +128,11 @@ export class Loading extends Phaser.Scene{
     });
 
     this.load.on('fileprogress', function (file) {
-
+      
     });
 
     this.load.on('complete', () => {
-
+      isComplete = true
       progressBox.setDepth(1);
       progressBar.fillStyle(0xEF4138, 1)
       progressBar.fillRect(180, 615, 360, 50);
@@ -143,8 +141,7 @@ export class Loading extends Phaser.Scene{
   }
 
   create(){
-
-    if(isComplete == true && isError == false){
+    if(isComplete === true && isError === false){
       var tapSign = this.add.sprite(360, 800, 'TAP').setScale(0.4);
       tapSign.setOrigin(0.5, 0.5)
 
@@ -162,11 +159,6 @@ export class Loading extends Phaser.Scene{
     //ad.setOrigin(0.5, 0.5);
 
     //tapSign.anims.play('blink', true);
-
-    this.input.on("pointerdown", () => {
-
-      this.scene.start("MainMenu");
-    })
   }
 
 }
