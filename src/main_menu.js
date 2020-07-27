@@ -65,44 +65,43 @@ export class Menu extends Phaser.Scene {
     }
 
     // urlData = {
-    //   apiLP_URL: 'https://53a126dc8a7c.ngrok.io/',             //// DEVELOPMENT-LOCAL
+    //   apiLP_URL: 'https://7f41949f7b4a.ngrok.io/',             //// DEVELOPMENT-LOCAL
     //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     // }
     gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
-
     this.challengersInfo();
 
     var background = this.add.sprite(360, 1280, 'MENU_BG').setScale(0.68, 0.67)
     background.setOrigin(0.5, 1);
 
-    var title = this.add.sprite(360, 230, 'TITLE').setScale(0.5)
+    var title = this.add.sprite(360, 230, 'TITLE').setScale(0.6)
     title.setOrigin(0.5, 0.5);
 
-    challengeGate = this.add.sprite(360, 600, 'BM_1P').setScale(0.23);
+    challengeGate = this.add.sprite(360, 600, 'BM_1P').setScale(0.6);
     challengeGate.setOrigin(0.5, 0.5);
     challengeGate.on('pointerdown', () => this.conditionChecking())
 
-    challengerListSign = this.add.sprite(430, 770, 'BM_4LD').setScale(0.16);
+    challengerListSign = this.add.sprite(425, 770, 'BM_4LD').setScale(0.65);
     challengerListSign.setOrigin(0.5,0.5);
     challengerListSign.on("pointerdown",() => this.showChallengersBoard())
 
-    challengerGuideSign = this.add.sprite(190, 670, 'BM_2I').setScale(0.16);
+    challengerGuideSign = this.add.sprite(190, 670, 'BM_2I').setScale(0.65);
     challengerGuideSign.setOrigin(0.5,0.5);
     challengerGuideSign.on("pointerdown",() => this.showTheGuidance())
 
-    challengerContract = this.add.sprite(300, challengerListSign.y, 'BM_3TC').setScale(0.16);
+    challengerContract = this.add.sprite(300, challengerListSign.y, 'BM_3TC').setScale(0.65);
     challengerContract.setOrigin(0.5,0.5);
     challengerContract.on("pointerdown",() => this.showTheContract())
 
 
     if(musicStatus === true){
       //menuSound.setMute(false)
-      musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5N').setScale(0.16);
+      musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5N').setScale(0.65);
       musicToggle.setOrigin(0.5,0.5);
     }
     else{
       //menuSound.setMute(true)
-      musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5F').setScale(0.16);
+      musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5F').setScale(0.65);
       musicToggle.setOrigin(0.5,0.5);
     }
 
@@ -139,14 +138,14 @@ export class Menu extends Phaser.Scene {
 
   showPaymentOption(required){
 
-    let optionBox = this.add.sprite(360, 640, 'PM_PY').setScale(0.5, 0.6);
+    let optionBox = this.add.sprite(360, 640, 'PM_PY').setScale(0.4, 0.45);
     optionBox.setOrigin(0.5, 0.5);
 
-    let changeMind = this.add.sprite(600, 470, 'BM_GEXB').setScale(0.15);
+    let changeMind = this.add.sprite(530, 500, 'BM_GEXB').setScale(0.5);
     changeMind.setOrigin(0.5, 0.5);
     changeMind.setInteractive();
     changeMind.on('pointerdown', () => {
-      closeSound.play()
+      //closeSound.play()
       poinPayOption.destroy();
       adWatchPayOption.destroy();
       optionBox.destroy();
@@ -154,7 +153,7 @@ export class Menu extends Phaser.Scene {
       this.activateButtons()
     })
 
-    poinPayOption = this.add.sprite(240, 640, 'BM_1BPP'+required).setScale(0.16);
+    poinPayOption = this.add.sprite(270, 640, 'BM_1BPP'+required).setScale(0.43);
     poinPayOption.setOrigin(0.5,0.5);
     poinPayOption.setInteractive();
     poinPayOption.on('pointerdown', () => {
@@ -163,14 +162,14 @@ export class Menu extends Phaser.Scene {
       adWatchPayOption.disableInteractive()
       changeMind.disableInteractive()
       if(userData.poin < required){
-        this.showDisclaimer('DM_PW', 0.5)
+        this.showDisclaimer('DM_PW', 0.6)
       }
       else {
-        this.showPayConfirmation('DM_PP'+required, 0.52, changeMind)
+        this.showPayConfirmation('DM_PP'+required, 0.6, changeMind)
       }
     })
 
-    adWatchPayOption = this.add.sprite(480, poinPayOption.y, 'BM_1AAD').setScale(0.16);
+    adWatchPayOption = this.add.sprite(450, poinPayOption.y, 'BM_1AAD').setScale(0.43);
     adWatchPayOption.setOrigin(0.5,0.5);
     adWatchPayOption.setInteractive();
     adWatchPayOption.on("pointerdown",() => {
@@ -253,11 +252,11 @@ export class Menu extends Phaser.Scene {
     poinPayOption.disableInteractive()
     adWatchPayOption.disableInteractive()
 
-    let confirmationBoard = this.add.sprite(360, 640, asset).setScale(size);
+    let confirmationBoard = this.add.sprite(360, 640, asset).setScale(size, 0.8);
     confirmationBoard.setOrigin(0.5, 0.5)
     confirmationBoard.setDepth(1)
 
-    let confirmChoice = this.add.sprite(280, 810, 'BM_CPP').setScale(0.15);
+    let confirmChoice = this.add.sprite(260, 810, 'BM_CPP').setScale(0.5);
     confirmChoice.setOrigin(0.5, 0.5);
     confirmChoice.setDepth(1)
     confirmChoice.setInteractive();
@@ -270,7 +269,7 @@ export class Menu extends Phaser.Scene {
       confirmChoice.disableInteractive();
     });
 
-    let denyChoice = this.add.sprite(445, 810, 'BM_DPP').setScale(0.15);
+    let denyChoice = this.add.sprite(465, 810, 'BM_DPP').setScale(0.5);
     denyChoice.setOrigin(0.5, 0.5);
     denyChoice.setDepth(1)
     denyChoice.setInteractive();
@@ -290,19 +289,19 @@ export class Menu extends Phaser.Scene {
   showDisclaimer(asset, size){
 
     this.disableButtons()
-    clickSound.play()
+    //clickSound.play()
 
-    let warningPopUp = this.add.sprite(360, 640, asset).setScale(size);
+    let warningPopUp = this.add.sprite(360, 640, asset).setScale(size, 0.7);
     warningPopUp.setOrigin(0.5, 0.5);
     warningPopUp.setDepth(1);
 
     if(asset === 'DM_PW'){
-      let closeIt = this.add.sprite(520, 380, 'BM_GEXB').setScale(0.2);
+      let closeIt = this.add.sprite(540, 460, 'BM_GEXB').setScale(0.5);
       closeIt.setOrigin(0.5, 0.5);
       closeIt.setDepth(1);
       closeIt.setInteractive();
       closeIt.on('pointerdown', () => {
-        closeSound.play()
+        //closeSound.play()
         warningPopUp.destroy();
         closeIt.destroy();
         this.activateButtons();
@@ -312,7 +311,7 @@ export class Menu extends Phaser.Scene {
 
   showChallengersBoard(){
 
-    clickSound.play()
+    //clickSound.play()
 
     this.disableButtons();
     let idHigh = [];
@@ -325,10 +324,10 @@ export class Menu extends Phaser.Scene {
     let urlParams = new URLSearchParams(window.location.search);
     let userSession = urlParams.get('session');
 
-    var bestChallengerBoard = this.add.sprite(360, 640, 'PM_3LD').setScale(1);
+    var bestChallengerBoard = this.add.sprite(360, 640, 'PM_3LD').setScale(0.65);
     bestChallengerBoard.setOrigin(0.5,0.5);
 
-    var imDone =  this.add.sprite(bestChallengerBoard.x + 200, bestChallengerBoard.y - 500, 'BM_GEXB').setScale(0.2);
+    var imDone =  this.add.sprite(bestChallengerBoard.x + 235, bestChallengerBoard.y - 470, 'BM_GEXB').setScale(0.6);
     imDone.disableInteractive();
     imDone.setOrigin(0.5,0.5);
 
@@ -336,7 +335,7 @@ export class Menu extends Phaser.Scene {
     this.challengerMilestone(userSession, rankHSData, rankTSData, imDone);
 
     imDone.on('pointerdown',() => {
-      closeSound.play()
+      //closeSound.play()
       idHigh.forEach((hText) => {
         hText.destroy()
       })
@@ -362,26 +361,26 @@ export class Menu extends Phaser.Scene {
   }
 
   showTheGuidance(){
-    clickSound.play()
+    //clickSound.play()
     this.disableButtons();
     var contentText = [
-      '1.\nTap layar untuk menjatuhkan box\n',
-      '2.\nSusun box di area permainan untuk mendapatkan skor, box yang jatuh di luar area permainan tidak mendapatkan skor\n',
-      '3.\nPerhitungan skor dilakukan setelah permainan selesai pada detik ke-30\n',
-      '4.\nSetiap box pada susunan tingkat pertama akan mendapatkan 1 (satu) poin, Setiap box pada susunan tingkat kedua akan mendapatkan 2 (dua) poin, dan berlaku seterusnya'
+      '1.\nTekan dan tahan layar untuk menggerakan Cart\n',
+      '2.\nLepas untuk mengurangi kecepatan Cart\n',
+      '3.\nSkor dan bonus waktu diperoleh ketika mencapai jarak 3m dan kelipatannya\n',
+      '4.\nPertahankan box pada Cart agar tidak jatuh, dalam waktu yg telah ditentukan'
     ]
 
-    var guidanceBoard = this.add.sprite(360, 640, 'PM_1I').setScale(1);
+    var guidanceBoard = this.add.sprite(360, 640, 'PM_1I').setScale(0.62);
     guidanceBoard.setOrigin(0.5,0.5);
 
-    var imDone =  this.add.sprite(guidanceBoard.x + 200, guidanceBoard.y - 495, 'BM_GEXB').setScale(0.2);
+    var imDone =  this.add.sprite(guidanceBoard.x + 225, guidanceBoard.y - 460, 'BM_GEXB').setScale(0.6);
     imDone.setInteractive();
     imDone.setOrigin(0.5,0.5);
 
     var guideText = this.add.text(360, 620, contentText, {
 
-      font: '26px HelveticaRoundedLTStd',
-      fill: '#84446D',
+      font: '26px FredokaOne',
+      fill: '#FFFFFF',
       align: 'center',
       wordWrap: {
         width: 490
@@ -389,7 +388,7 @@ export class Menu extends Phaser.Scene {
     }).setOrigin(0.5, 0.5)
 
     imDone.on('pointerdown',() => {
-      closeSound.play()
+      //closeSound.play()
       guidanceBoard.destroy();
       guideText.destroy();
       imDone.destroy();
@@ -398,7 +397,7 @@ export class Menu extends Phaser.Scene {
   }
 
   showTheContract(){
-    clickSound.play()
+    //clickSound.play()
     this.disableButtons();
 
     let page1 = [
@@ -431,12 +430,12 @@ export class Menu extends Phaser.Scene {
     let tncContent = [page1, page2]
     let selector = 0
 
-    var contractBoard = this.add.sprite(360,640, 'PM_2TC').setScale(1, 0.9);
+    var contractBoard = this.add.sprite(360,640, 'PM_2TC').setScale(0.62);
     contractBoard.setOrigin(0.5, 0.5);
 
     let text = this.add.text(370, 640, tncContent[selector], {
-      font: '23px HelveticaRoundedLTStd',
-      color: '#606060',
+      font: '23px FredokaOne',
+      color: '#FFFFFF',
       align: 'left',
       wordWrap: {
         width: 500
@@ -471,12 +470,12 @@ export class Menu extends Phaser.Scene {
     //   text.setText(tncContent[selector]);
     // })
 
-    var imDone =  this.add.sprite(contractBoard.x + 200, contractBoard.y - 450, 'BM_GEXB').setScale(0.2);
+    var imDone =  this.add.sprite(contractBoard.x + 225, contractBoard.y - 450, 'BM_GEXB').setScale(0.6);
     imDone.setInteractive();
     imDone.setOrigin(0.5,0.5);
 
     imDone.on('pointerdown',() => {
-      closeSound.play()
+      //closeSound.play()
       contractBoard.destroy();
       text.destroy();
       // nextPage.destroy();
@@ -506,18 +505,18 @@ export class Menu extends Phaser.Scene {
   }
 
   disableMusic(){
-    clickSound.play()
+    //clickSound.play()
     if(musicStatus == true){
-      menuSound.setMute(true)
+      //menuSound.setMute(true)
       musicStatus = false;
       musicToggle.setTexture('BM_5F');
-      musicToggle.setScale(0.16);
+      musicToggle.setScale(0.65);
     }
     else{
-      menuSound.setMute(false);
+      //menuSound.setMute(false);
       musicStatus = true;
       musicToggle.setTexture('BM_5N');
-      musicToggle.setScale(0.16);
+      musicToggle.setScale(0.65);
     }
   }
 
@@ -659,7 +658,7 @@ export class Menu extends Phaser.Scene {
           else {
             startPos += 70;
           }
-          let life = this.add.image(startPos, 450, 'LIFE').setScale(0.17);
+          let life = this.add.image(startPos, 450, 'LIFE').setScale(0.7);
           life.setOrigin(0.5, 0.5);
         }
 
@@ -668,21 +667,21 @@ export class Menu extends Phaser.Scene {
         this.activateButtons();
       }
       else {
-        //this.showDisclaimer('WM_EVW', 0.5)
+        this.showDisclaimer('WM_EVW', 0.6)
       }
 
     }).catch(error => {
 
       console.log(error);
-      //this.showDisclaimer('WM_SE', 0.5)
+      this.showDisclaimer('WM_SE', 0.6)
     });
   }
 
   challengerListing(hID, cID, hSC, cSC){
 
-    let startPosH = 355
-    let startPosC = 660
-    this.preloadAnimation(360, 690, 1.2, 8, 'PRE_ANIM1');
+    let startPosH = 385
+    let startPosC = 685
+    //this.preloadAnimation(360, 690, 1.2, 8, 'PRE_ANIM1');
 
     fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/leaderboard_imlek?limit_highscore=5&limit_total_score=5&linigame_platform_token="+gameToken, {
 
@@ -706,19 +705,19 @@ export class Menu extends Phaser.Scene {
           startPosH += 0
         }
         else {
-          startPosH += 40
+          startPosH += 43
         }
 
         let shortHID = uNameHi.length > 16 ? uNameHi.substring(0, 16)+'...' : uNameHi
-        hID[i] = this.add.text(170, startPosH, ''+shortHID, {
-          font: '23px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        hID[i] = this.add.text(150, startPosH, ''+shortHID, {
+          font: '23px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(0, 0.5);
 
-        hSC[i] = this.add.text(550, startPosH, ''+data.result.highscore_leaderboard[i].user_highscore, {
-          font: '23px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        hSC[i] = this.add.text(565, startPosH, ''+data.result.highscore_leaderboard[i].user_highscore, {
+          font: '25px FredokaOne',
+          fill: '#FFFFFF',
           align: 'right'
         }).setOrigin(1, 0.5);
       }
@@ -730,26 +729,26 @@ export class Menu extends Phaser.Scene {
           startPosC += 0
         }
         else {
-          startPosC += 40
+          startPosC += 43
         }
 
         let shortCID = uNameCum.length > 16 ? uNameCum.substring(0, 16)+'...' : uNameCum
-        cID[i] = this.add.text(170, startPosC, ''+shortCID, {
-          font: '23px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        cID[i] = this.add.text(150, startPosC, ''+shortCID, {
+          font: '23px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(0, 0.5);
 
-        cSC[i] = this.add.text(550, startPosC, ''+data.result.totalscore_leaderboard[i].total_score, {
-          font: '23px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        cSC[i] = this.add.text(565, startPosC, ''+data.result.totalscore_leaderboard[i].total_score, {
+          font: '25px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(1, 0.5);
       }
 
     }).catch(error => {
 
-      //console.log(error.result);
+      console.log(error.result);
     });
   }
 
@@ -758,11 +757,11 @@ export class Menu extends Phaser.Scene {
     let rankPosConfig = {
       high_score: {
         x: 160,
-        y: 965
+        y: 1000
       },
       total_score: {
         x: 160,
-        y: 1010,
+        y: 1050,
       }
     }
 
@@ -787,56 +786,56 @@ export class Menu extends Phaser.Scene {
       //console.log(data.result);
       if(data.result.rank_high_score === 0){
         rHData.rank = this.add.text(rankPosConfig.high_score.x, rankPosConfig.high_score.y, ''+data.result.rank_high_score, {
-          font: '28px HelveticaRoundedLTStd',
-          fill: '#84446D',
+          font: '28px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(0, 0.5)
-        rHData.score = this.add.text(rankPosConfig.high_score.x + 390, rankPosConfig.high_score.y, '0', {
-          font: '25px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        rHData.score = this.add.text(rankPosConfig.high_score.x + 400, rankPosConfig.high_score.y, '0', {
+          font: '25px FredokaOne',
+          fill: '#FFFFFF',
           align: 'right'
         }).setOrigin(1, 0.5)
       }
       else {
         rHData.rank = this.add.text(rankPosConfig.high_score.x, rankPosConfig.high_score.y, '#'+data.result.rank_high_score.ranking, {
-          font: '26px HelveticaRoundedLTStd',
-          fill: '#84446D',
+          font: '26px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(0, 0.5)
-        rHData.score = this.add.text(rankPosConfig.high_score.x + 390, rankPosConfig.high_score.y, ''+data.result.rank_high_score.user_highscore, {
-          font: '25px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        rHData.score = this.add.text(rankPosConfig.high_score.x + 400, rankPosConfig.high_score.y, ''+data.result.rank_high_score.user_highscore, {
+          font: '25px FredokaOne',
+          fill: '#FFFFFF',
           align: 'right'
         }).setOrigin(1, 0.5)
       }
 
       if(data.result.rank_total_score === 0){
         rTData.rank = this.add.text(rankPosConfig.total_score.x, rankPosConfig.total_score.y, ''+data.result.rank_total_score, {
-          font: '28px HelveticaRoundedLTStd',
-          fill: '#84446D',
+          font: '28px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(0, 0.5)
-        rTData.score = this.add.text(rankPosConfig.total_score.x + 390, rankPosConfig.total_score.y, '0', {
-          font: '25px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        rTData.score = this.add.text(rankPosConfig.total_score.x + 400, rankPosConfig.total_score.y, '0', {
+          font: '25px FredokaOne',
+          fill: '#FFFFFF',
           align: 'right'
         }).setOrigin(1, 0.5)
       }
       else {
         rTData.rank = this.add.text(rankPosConfig.total_score.x, rankPosConfig.total_score.y, '#'+data.result.rank_total_score.ranking, {
-          font: '26px HelveticaRoundedLTStd',
-          fill: '#84446D',
+          font: '26px FredokaOne',
+          fill: '#FFFFFF',
           align: 'left'
         }).setOrigin(0, 0.5)
-        rTData.score = this.add.text(rankPosConfig.total_score.x + 390, rankPosConfig.total_score.y, ''+data.result.rank_total_score.total_score, {
-          font: '25px HelveticaRoundedLTStd',
-          fill: '#84446D',
+        rTData.score = this.add.text(rankPosConfig.total_score.x + 400, rankPosConfig.total_score.y, ''+data.result.rank_total_score.total_score, {
+          font: '25px FredokaOne',
+          fill: '#FFFFFF',
           align: 'right'
         }).setOrigin(1, 0.5)
       }
 
       leave.setInteractive()
-      preload.destroy();
+      //preload.destroy();
     }).catch(error => {
 
       //console.log(error);
@@ -847,7 +846,7 @@ export class Menu extends Phaser.Scene {
 
     this.connectToSource();
 
-    this.showDisclaimer('DM_ADL', 0.5)
+    this.showDisclaimer('DM_ADL', 0.6)
     this.preloadAnimation(360, 680, 1.3, 8, 'PRE_ANIM1');
     //this.disableButtons()
 

@@ -10,10 +10,10 @@ const config = {
   physics: {
     default: 'matter',
     matter: {
-      debug: {
-        showBody: true,
-        showStaticBody: true
-      },
+      // debug: {
+      //   showBody: true,
+      //   showStaticBody: true
+      // },
       debugBodyColor: 0x000000
     },
   },

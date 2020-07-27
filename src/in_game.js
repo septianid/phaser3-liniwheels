@@ -35,23 +35,22 @@ var timeBar;
 var checkpoint_TreshHold;
 var maximumTreshHold = 10;
 var minimumTreshHold = 0;
-var staticTreshHold = 3;
+var staticTreshHold;
 //////////////////////////////// Semua Function Untuk pengaruhin treshhold
 var badanmobil
 var background;
 var awan1;
 var awan2;
 var awan3;
-
+var finalScoreText
+var latestHighScoreText
+var exitButton;
 var scoreUi;
 var valueScore;
 var infoTextui;
 var playLog = []
 var gameData = {}
-var executeOnce = {
-  isTimeOut: 1,
-  isDrop: 1
-};
+var executeOnce = {};
 var gameOption = {
   timeConfig: 30,
   mountainTotal : 3,
@@ -83,26 +82,26 @@ export class InGame extends Phaser.Scene {
   }
 
   preload(){
-    this.load.json('car', './src/assets/Car.json');
-    this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json');
-
-    this.load.json('Kart','./src/assets/Kart_Collider.json');
-    this.load.atlas('Kart_Sheet','./src/assets/Kart_Sheet.png','./src/assets/Kart_Sheet.json');
-
-    this.load.json('Wheel','./src/assets/Roda_Collider.json');
-    this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
-
-    this.load.image('Roda_Test','./src/assets/roda3.png');
+    // this.load.json('car', './src/assets/Car.json');
+    // this.load.atlas('car_sheet', './src/assets/car_sheet.png', './src/assets/car_sheet.json');
+    // this.load.json('Wheel','./src/assets/Roda_Collider.json');
+    // this.load.atlas('Wheel_Sheet','./src/assets/Roda_Sheet.png','./src/assets/Roda_Sheet.json');
   }
 
   create(){
-
+    tresholdValue = 0;
+    valueScore = 0;
+    staticTreshHold = 10;
     bodyStore = [];
-    rockStore= [];
+    rockStore = [];
+    executeOnce = {
+      isDrop: 1,
+      isTimeOut: 1
+    }
     terrainGraphics = [];
     checkpointSpawn = [];
     distanceTreshold = false;
-    startLine = new Phaser.Math.Vector2(-200, Math.random());
+    startLine = new Phaser.Math.Vector2(-500, 300);
     //syaratspawn = 0;
     //berhenti = 0;
     for(let i = 0; i < gameOption.mountainTotal; i++){
@@ -113,7 +112,7 @@ export class InGame extends Phaser.Scene {
 
     isMoving = false;
 
-    this.generatePlayercar(250, 400);
+    this.generatePlayercar(200, 400);
 
     // var carJson = this.cache.json.get('car')
     // var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {
@@ -158,17 +157,15 @@ export class InGame extends Phaser.Scene {
     timeBar.fillRect(0, 60, 300, 15);
     //console.log(graphics);
 
-    tresholdValue = 0;
-
     distanceSpawn = 5;
     distanceConvertString = this.add.text(0, 30, 'DISTANCE', {
-      font: 'bold 26px Arial',
+      font: '26px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
     distanceUi = this.add.text(0, 70, '0', {
-      font: 'bold 42px Arial',
+      font: '42px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
@@ -176,17 +173,31 @@ export class InGame extends Phaser.Scene {
     valueScore = 0;
     infoTextui = this.add.text(0, 30, 'SCORE' ,{
 
-      font: 'bold 26px Arial',
+      font: '26px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
 
     scoreUi = this.add.text(0, 70, '' + valueScore, {
 
-      font: 'bold 42px Arial',
+      font: '42px FredokaOne',
       fill: 'white',
       align: 'center'
     }).setOrigin(0.5, 0.5);
+
+    finalScoreText = this.add.text(0, 570, '0', {
+      font: '64px FredokaOne',
+      fill: '#FFFFFF',
+    }).setOrigin(0.5, 0.5)
+    finalScoreText.setDepth(1)
+    finalScoreText.visible = false
+
+    latestHighScoreText = this.add.text(0, 720, '0', {
+      font: '64px FredokaOne',
+      fill: '#FFFFFF',
+    }).setOrigin(0.5, 0.5)
+    latestHighScoreText.setDepth(1)
+    latestHighScoreText.visible = false
 
     // timeUi = this.add.text(0,150,''+tresholdTime,{
     //   font: 'bold 42px Arial',
@@ -208,8 +219,14 @@ export class InGame extends Phaser.Scene {
     flag = this.add.sprite(0, 220, 'Flag').setScale(2);
     flag.setOrigin(0.5, 0.5);
 
-    final_panel = this.add.sprite(0, 380, 'score').setScale(0.5).setDepth(1);
+    exitButton = this.add.sprite(360, 820, 'BG_GO').setScale(0.45)
+    exitButton.setOrigin(0.5, 0.5)
+    exitButton.setDepth(1)
+    exitButton.visible = false
+
+    final_panel = this.add.sprite(360, 640, 'DG_GO').setScale(0.5);
     final_panel.setOrigin(0.5, 0.5);
+    final_panel.visible = false; //set visibility untuk final score
 
     isFalling = false
 
@@ -218,12 +235,11 @@ export class InGame extends Phaser.Scene {
     this.matter.world.on('collisionstart', (events) =>{
       events.pairs.forEach((pair) => {
         const {bodyA, bodyB} = pair;
-        if((bodyA.label == 'cargo' && bodyB.label != "") || (bodyB.label == 'cargo' && bodyA.label != "")){
+        if((bodyA.label == 'cargo' && bodyB.label != '') || (bodyB.label == 'cargo' && bodyA.label != '')){
           isFalling = true
           canMoving = false
           timeBar.scaleX = 0;
-          tresholdTime.remove(false)
-          ;
+          tresholdTime.remove(false);
           //final_panel_appear = this.time.addEvent({delay: 1000, callback: this.appear(true), callbackScope: this});//function untuk tampilin pake delay
         }
       })
@@ -238,11 +254,10 @@ export class InGame extends Phaser.Scene {
     awan2 = this.add.sprite(60, 150, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
     awan3 = this.add.sprite(670, 170, 'cloud3').setScale(1).setDepth(-500).setOrigin(0,0);
 
-
+    
   }
 
   update(){
- 
     flag.visible = false; //set visibility untuk checkpoint
     this.cameras.main.scrollX = badanmobil.body.position.x - this.game.config.width / 8;
     if(isMoving){
@@ -303,7 +318,7 @@ export class InGame extends Phaser.Scene {
               // console.log("Berganti Angka Menjadi");
               // console.log(checkpoint_TreshHold);
         /////////////////////////////// Dynamic Checkpoint Treshhold
-        staticTreshHold = staticTreshHold + 3;
+        staticTreshHold = staticTreshHold + 10;
         checkpoint_TreshHold = staticTreshHold;
 
         gameOption.timeConfig += (staticTreshHold - 2)
@@ -344,6 +359,9 @@ export class InGame extends Phaser.Scene {
 
     flag.x = this.cameras.main.scrollX + this.game.config.width / 2;
     final_panel.x = this.cameras.main.scrollX + this.game.config.width / 2;
+    finalScoreText.x = this.cameras.main.scrollX + this.game.config.width / 2
+    exitButton.x = this.cameras.main.scrollX + this.game.config.width / 2
+    latestHighScoreText.x = this.cameras.main.scrollX + this.game.config.width / 2
     background.x = this.cameras.main.scrollX - 220;
     timeBar.x = this.cameras.main.scrollX + 210;
 
@@ -376,16 +394,16 @@ export class InGame extends Phaser.Scene {
     //syarat penampilan final panel score
 
     /////////////////////////////////////////////////
-    if(awan1.x < this.cameras.main.scrollX - 230){
-      awan1.x = this.cameras.main.scrollX + 650;
+    if(awan1.x < this.cameras.main.scrollX - 330){
+      awan1.x = this.cameras.main.scrollX + 750;
     }
 
-    if(awan2.x < this.cameras.main.scrollX - 100){
-      awan2.x = this.cameras.main.scrollX + 650;
+    if(awan2.x < this.cameras.main.scrollX - 200){
+      awan2.x = this.cameras.main.scrollX + 750;
     }
 
-    if(awan3.x < this.cameras.main.scrollX - 100){
-      awan3.x = this.cameras.main.scrollX + 650;
+    if(awan3.x < this.cameras.main.scrollX - 200){
+      awan3.x = this.cameras.main.scrollX + 750;
     }
     //////////////////////////////////////////////// Fungsi Kasar Awan
   }
@@ -410,9 +428,9 @@ export class InGame extends Phaser.Scene {
     badanmobil = this.matter.add.sprite(posX, posY, 'Kart_Sheet', 'Kart.png',{
         shape : carJson.Kart_Sheet,
         label: 'Kart_Sheet'
-    }).setScale(0.3);
+    }).setScale(0.4, 0.3).setMass(10);
 
-    console.log(badanmobil);
+    //console.log(badanmobil);
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
 
       parts: [badanmobil.body],
@@ -430,44 +448,44 @@ export class InGame extends Phaser.Scene {
     }).setScale(0.1).setDepth(1);
 
 
-    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 65, 'Roda_Test').setScale(0.37);
-    cartwheelFront.setCircle(28, {
+    cartwheelFront = this.matter.add.sprite(posX + 40, posY + 65, 'Roda_Test').setScale(0.35);
+    cartwheelFront.setCircle(25, {
       label: 'wheel',
-      friction: 0.5,
+      friction: 1,
       restitution: 0,
-    });
-    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 65, 'Roda_Test').setScale(0.37);
-    cartwheelRear.setCircle(28, {
+    }).setMass(25);
+    cartwheelRear = this.matter.add.sprite(posX - 40, posY + 65, 'Roda_Test').setScale(0.35);
+    cartwheelRear.setCircle(25, {
       label: 'wheel',
-      friction: 0.5,
+      friction: 1,
       restitution: 0,
-    });
+    }).setMass(10);
     //console.log(rearWheel);
 
     this.matter.add.constraint(badanmobil, cartwheelFront, 40, 0, {
       pointA:{
-        x: 20,
+        x: 40,
         y: 38
       }
     });
 
     this.matter.add.constraint(badanmobil, cartwheelFront, 40, 0, {
       pointA:{
-        x: 50,
+        x: 70,
         y: 38
       }
     });
 
     this.matter.add.constraint(badanmobil, cartwheelRear, 40, 0, {
       pointA:{
-        x: -50,
+        x: -70,
         y: 35
       }
     });
 
     this.matter.add.constraint(badanmobil, cartwheelRear, 40, 0, {
       pointA:{
-        x: -20,
+        x: -40,
         y: 35
       }
     });
@@ -495,6 +513,7 @@ export class InGame extends Phaser.Scene {
 
   gameEndData(type){
     let timeOver = new Date()
+
     playLog.push({
       time: timeOver,
       score: valueScore,
@@ -502,6 +521,9 @@ export class InGame extends Phaser.Scene {
       fail_type: type
     })
 
+    final_panel.visible = true;
+    finalScoreText.visible = true;
+    finalScoreText.setText(''+valueScore)
     this.gameOver(timeOver)
     canMoving = false
     tresholdTime.remove(false)
@@ -510,10 +532,8 @@ export class InGame extends Phaser.Scene {
     //console.log(playLog);
   }
 
-  appear(hasil){
-    //console.log(playlog);   
-    final_panel.visible = hasil; 
-    
+  appear(){
+    //console.log(finalScoreText)
   }
 
   terrainGeneration(graphics, start){
@@ -714,7 +734,19 @@ export class InGame extends Phaser.Scene {
       }
 
     }).then(data => {
-      console.log(data.result);
+      //console.log(data.result);
+      latestHighScoreText.visible = true
+      latestHighScoreText.setDepth(1)
+      latestHighScoreText.setText(''+data.result.user_highscore)
+      exitButton.visible = true
+      exitButton.setInteractive()
+      exitButton.on('pointerdown', () => {
+
+        this.scene.start('MainMenu', {
+          sound_status: gameData.sound,
+        });
+        playLog = []
+      })
     }).catch(error => {
       console.log(error.result);
     });
