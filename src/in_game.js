@@ -213,6 +213,8 @@ export class InGame extends Phaser.Scene {
 
     isFalling = false
 
+    final_panel.visible = false; //set visibility untuk final score
+
     this.matter.world.on('collisionstart', (events) =>{
       events.pairs.forEach((pair) => {
         const {bodyA, bodyB} = pair;
@@ -240,8 +242,7 @@ export class InGame extends Phaser.Scene {
   }
 
   update(){
-
-    final_panel.visible = false; //set visibility untuk final score
+ 
     flag.visible = false; //set visibility untuk checkpoint
     this.cameras.main.scrollX = badanmobil.body.position.x - this.game.config.width / 8;
     if(isMoving){
@@ -328,6 +329,10 @@ export class InGame extends Phaser.Scene {
     // timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
+    if(tresholdValue<0)
+    {
+      tresholdValue = 0;
+    }
     distanceSpawn = Math.floor(this.cameras.main.scrollX/100);
     distanceConvertString.x = this.cameras.main.scrollX + 80;
     distanceUi.x = this.cameras.main.scrollX + 80;
@@ -500,14 +505,15 @@ export class InGame extends Phaser.Scene {
     this.gameOver(timeOver)
     canMoving = false
     tresholdTime.remove(false)
-    final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear, callbackScope: this});
-
+    final_panel_appear = this.time.addEvent({ delay: 1000, callback: this.appear(true), callbackScope: this});
+    //final_panel.visible = true;
     //console.log(playLog);
   }
 
-  appear(){
-    //console.log(playLog);
-    final_panel.visible = true;
+  appear(hasil){
+    //console.log(playlog);   
+    final_panel.visible = hasil; 
+    
   }
 
   terrainGeneration(graphics, start){
