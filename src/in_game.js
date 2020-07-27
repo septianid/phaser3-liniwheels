@@ -265,7 +265,7 @@ export class InGame extends Phaser.Scene {
       let carVelocity;
       carVelocity = cartwheelFront.body.angularSpeed + gameOption.speed;
       //console.log(frontWheel.body.angularSpeed);
-      carVelocity = Phaser.Math.Clamp(carVelocity, 0, 0.7);
+      carVelocity = Phaser.Math.Clamp(carVelocity, 0, 0.3);
 
       this.matter.body.setAngularVelocity(cartwheelRear.body, carVelocity);
       this.matter.body.setAngularVelocity(cartwheelFront.body, carVelocity);
@@ -428,7 +428,7 @@ export class InGame extends Phaser.Scene {
     badanmobil = this.matter.add.sprite(posX, posY, 'Kart_Sheet', 'Kart.png',{
         shape : carJson.Kart_Sheet,
         label: 'Kart_Sheet'
-    }).setScale(0.4, 0.3).setMass(10);
+    }).setScale(0.4, 0.3);
 
     //console.log(badanmobil);
     cartStructure = Phaser.Physics.Matter.Matter.Body.create({
@@ -453,13 +453,13 @@ export class InGame extends Phaser.Scene {
       label: 'wheel',
       friction: 1,
       restitution: 0,
-    }).setMass(50);
+    })
     cartwheelRear = this.matter.add.sprite(posX - 40, posY + 65, 'Roda_Test').setScale(0.35);
     cartwheelRear.setCircle(25, {
       label: 'wheel',
       friction: 1,
       restitution: 0,
-    }).setMass(20);
+    })
     //console.log(rearWheel);
 
     this.matter.add.constraint(badanmobil, cartwheelFront, 40, 0, {
