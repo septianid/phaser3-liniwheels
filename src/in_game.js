@@ -44,6 +44,7 @@ var awan2;
 var awan3;
 var finalScoreText
 var latestHighScoreText
+var preload
 var exitButton;
 var scoreUi;
 var valueScore;
@@ -152,6 +153,21 @@ export class InGame extends Phaser.Scene {
     // timeBar = this.add.sprite(0, 100, 'timebar').setOrigin(0, 0.5);
     // timeBar.scaleX = 3;
     // timeBar.scaleY = 2;
+    preload = this.add.sprite(0, 720, 'PRE_ANIM1').setOrigin(0.5 ,0.5);
+    preload.setScale(1.2);
+    preload.setDepth(1);
+    preload.visible = false
+
+    this.anims.create({
+      key: 'PRE_ANIM1',
+      frames: this.anims.generateFrameNumbers('PRE_ANIM1', {
+        start: 1,
+        end: 8
+      }),
+      frameRate: 20,
+      repeat: -1
+    });
+
     timeBar = this.add.graphics(0, 100)
     timeBar.fillStyle(0x8b0000, 1);
     timeBar.fillRect(0, 60, 300, 15);
@@ -254,23 +270,21 @@ export class InGame extends Phaser.Scene {
     awan2 = this.add.sprite(60, 150, 'cloud2').setScale(0.5).setDepth(-500).setOrigin(0,0);
     awan3 = this.add.sprite(670, 170, 'cloud3').setScale(1).setDepth(-500).setOrigin(0,0);
 
-    
+
   }
 
   update(){
+
     flag.visible = false; //set visibility untuk checkpoint
     this.cameras.main.scrollX = badanmobil.body.position.x - this.game.config.width / 8;
     if(isMoving){
 
       let carVelocity;
       carVelocity = cartwheelFront.body.angularSpeed + gameOption.speed;
-      //console.log(frontWheel.body.angularSpeed);
       carVelocity = Phaser.Math.Clamp(carVelocity, 0, 0.3);
 
       this.matter.body.setAngularVelocity(cartwheelRear.body, carVelocity);
       this.matter.body.setAngularVelocity(cartwheelFront.body, carVelocity);
-      //console.log(frontWheel.angularSpeed);
-      //console.log(rearWheel.angularSpeed);
     }
 
     terrainGraphics.forEach((graphics) => {
@@ -321,8 +335,8 @@ export class InGame extends Phaser.Scene {
         staticTreshHold = staticTreshHold + 10;
         checkpoint_TreshHold = staticTreshHold;
 
-        gameOption.timeConfig += (staticTreshHold - 2)
-        timeBar.scaleX += ((1 / 30) * (staticTreshHold - 2))
+        gameOption.timeConfig += 4
+        timeBar.scaleX += ((1 / 30) * 4)
         /////////////////////////////// Static Checkpoint TreshHold
       }
       else {
@@ -344,14 +358,13 @@ export class InGame extends Phaser.Scene {
     // timeUi.x = this.cameras.main.scrollX+this.game.config.width/2;
 
     tresholdValue = Math.floor(this.cameras.main.scrollX / 100);
-    if(tresholdValue<0)
-    {
+    if(tresholdValue < 0){
       tresholdValue = 0;
     }
     distanceSpawn = Math.floor(this.cameras.main.scrollX/100);
     distanceConvertString.x = this.cameras.main.scrollX + 80;
     distanceUi.x = this.cameras.main.scrollX + 80;
-    distanceUi.setText('' + tresholdValue);
+    distanceUi.setText(''+tresholdValue);
 
     infoTextui.x = this.cameras.main.scrollX + 640;
     scoreUi.x = this.cameras.main.scrollX + 640;
@@ -362,6 +375,7 @@ export class InGame extends Phaser.Scene {
     finalScoreText.x = this.cameras.main.scrollX + this.game.config.width / 2
     exitButton.x = this.cameras.main.scrollX + this.game.config.width / 2
     latestHighScoreText.x = this.cameras.main.scrollX + this.game.config.width / 2
+    preload.x = this.cameras.main.scrollX + this.game.config.width / 2
     background.x = this.cameras.main.scrollX - 220;
     timeBar.x = this.cameras.main.scrollX + 210;
 
@@ -445,7 +459,8 @@ export class InGame extends Phaser.Scene {
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(0.1).setDepth(1).setMass(10);
+      density: 0.0001
+    }).setScale(0.1);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 65, 'Roda_Test').setScale(0.35);
@@ -699,6 +714,8 @@ export class InGame extends Phaser.Scene {
   gameOver(over){
 
     //console.log(userLog);
+    preload.visible = true
+    preload.anims.play('PRE_ANIM1', true);
 
     let requestID = CryptoJS.AES.encrypt('LG'+'+'+gameData.token+'+'+Date.now(), 'c0dif!#l1n!9am#enCr!pto9r4pH!*').toString()
     let dataID;
@@ -738,6 +755,7 @@ export class InGame extends Phaser.Scene {
       latestHighScoreText.visible = true
       latestHighScoreText.setDepth(1)
       latestHighScoreText.setText(''+data.result.user_highscore)
+      preload.destroy()
       exitButton.visible = true
       exitButton.setInteractive()
       exitButton.on('pointerdown', () => {

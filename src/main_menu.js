@@ -41,15 +41,11 @@ export class Menu extends Phaser.Scene {
     else {
       musicStatus = data.sound_status
     }
-    // clickSound = this.sound.add('CLICK_SOUND')
-    // closeSound = this.sound.add('CLOSE_SOUND')
-    // menuSound = this.sound.add('MENU_SOUND')
-    // menuSound.loop = true;
-    // menuSound.play();
-  }
-
-  preload(){
-
+    clickSound = this.sound.add('CLICK_SOUND')
+    closeSound = this.sound.add('CLOSE_SOUND')
+    menuSound = this.sound.add('MENU_SOUND')
+    menuSound.loop = true;
+    menuSound.play();
   }
 
   create(){
@@ -95,12 +91,12 @@ export class Menu extends Phaser.Scene {
 
 
     if(musicStatus === true){
-      //menuSound.setMute(false)
+      menuSound.setMute(false)
       musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5N').setScale(0.65);
       musicToggle.setOrigin(0.5,0.5);
     }
     else{
-      //menuSound.setMute(true)
+      menuSound.setMute(true)
       musicToggle = this.add.sprite(530, challengerGuideSign.y, 'BM_5F').setScale(0.65);
       musicToggle.setOrigin(0.5,0.5);
     }
@@ -108,11 +104,11 @@ export class Menu extends Phaser.Scene {
     musicToggle.on('pointerdown', () => this.disableMusic());
 
     this.game.events.on('hidden',function(){
-      //menuSound.setMute(true);
+      menuSound.setMute(true);
     },this);
 
     this.game.events.on('visible', function(){
-      //menuSound.setMute(false);
+      menuSound.setMute(false);
     });
   }
 
@@ -123,7 +119,7 @@ export class Menu extends Phaser.Scene {
 
   conditionChecking(){
 
-    //clickSound.play()
+    clickSound.play()
     this.disableButtons()
     if(userData.free_chance != 0){
       let timeStart = new Date()
@@ -145,7 +141,7 @@ export class Menu extends Phaser.Scene {
     changeMind.setOrigin(0.5, 0.5);
     changeMind.setInteractive();
     changeMind.on('pointerdown', () => {
-      //closeSound.play()
+      closeSound.play()
       poinPayOption.destroy();
       adWatchPayOption.destroy();
       optionBox.destroy();
@@ -157,7 +153,7 @@ export class Menu extends Phaser.Scene {
     poinPayOption.setOrigin(0.5,0.5);
     poinPayOption.setInteractive();
     poinPayOption.on('pointerdown', () => {
-      //clickSound.play()
+      clickSound.play()
       poinPayOption.disableInteractive()
       adWatchPayOption.disableInteractive()
       changeMind.disableInteractive()
@@ -173,7 +169,7 @@ export class Menu extends Phaser.Scene {
     adWatchPayOption.setOrigin(0.5,0.5);
     adWatchPayOption.setInteractive();
     adWatchPayOption.on("pointerdown",() => {
-      //clickSound.play()
+      clickSound.play()
       poinPayOption.disableInteractive()
       adWatchPayOption.disableInteractive()
       changeMind.disableInteractive()
@@ -261,8 +257,8 @@ export class Menu extends Phaser.Scene {
     confirmChoice.setDepth(1)
     confirmChoice.setInteractive();
     confirmChoice.on('pointerdown', () => {
-      //clickSound.play()
-      //this.preloadAnimation(360, 490, 1.0, 8, 'PRE_ANIM1');
+      clickSound.play()
+      this.preloadAnimation(360, 510, 0.7, 8, 'PRE_ANIM1');
       let timeStart;
       timeStart = new Date();
       this.beatTheGame(timeStart, true)
@@ -274,7 +270,7 @@ export class Menu extends Phaser.Scene {
     denyChoice.setDepth(1)
     denyChoice.setInteractive();
     denyChoice.on('pointerdown', () => {
-      //clickSound.play()
+      clickSound.play()
       poinPayOption.setInteractive()
       adWatchPayOption.setInteractive()
 
@@ -289,7 +285,7 @@ export class Menu extends Phaser.Scene {
   showDisclaimer(asset, size){
 
     this.disableButtons()
-    //clickSound.play()
+    clickSound.play()
 
     let warningPopUp = this.add.sprite(360, 640, asset).setScale(size, 0.7);
     warningPopUp.setOrigin(0.5, 0.5);
@@ -301,7 +297,7 @@ export class Menu extends Phaser.Scene {
       closeIt.setDepth(1);
       closeIt.setInteractive();
       closeIt.on('pointerdown', () => {
-        //closeSound.play()
+        closeSound.play()
         warningPopUp.destroy();
         closeIt.destroy();
         this.activateButtons();
@@ -311,7 +307,7 @@ export class Menu extends Phaser.Scene {
 
   showChallengersBoard(){
 
-    //clickSound.play()
+    clickSound.play()
 
     this.disableButtons();
     let idHigh = [];
@@ -335,7 +331,7 @@ export class Menu extends Phaser.Scene {
     this.challengerMilestone(userSession, rankHSData, rankTSData, imDone);
 
     imDone.on('pointerdown',() => {
-      //closeSound.play()
+      closeSound.play()
       idHigh.forEach((hText) => {
         hText.destroy()
       })
@@ -361,7 +357,7 @@ export class Menu extends Phaser.Scene {
   }
 
   showTheGuidance(){
-    //clickSound.play()
+    clickSound.play()
     this.disableButtons();
     var contentText = [
       '1.\nTekan dan tahan layar untuk menggerakan Cart\n',
@@ -388,7 +384,7 @@ export class Menu extends Phaser.Scene {
     }).setOrigin(0.5, 0.5)
 
     imDone.on('pointerdown',() => {
-      //closeSound.play()
+      closeSound.play()
       guidanceBoard.destroy();
       guideText.destroy();
       imDone.destroy();
@@ -397,7 +393,7 @@ export class Menu extends Phaser.Scene {
   }
 
   showTheContract(){
-    //clickSound.play()
+    clickSound.play()
     this.disableButtons();
 
     let page1 = [
@@ -475,7 +471,7 @@ export class Menu extends Phaser.Scene {
     imDone.setOrigin(0.5,0.5);
 
     imDone.on('pointerdown',() => {
-      //closeSound.play()
+      closeSound.play()
       contractBoard.destroy();
       text.destroy();
       // nextPage.destroy();
@@ -505,15 +501,15 @@ export class Menu extends Phaser.Scene {
   }
 
   disableMusic(){
-    //clickSound.play()
+    clickSound.play()
     if(musicStatus == true){
-      //menuSound.setMute(true)
+      menuSound.setMute(true)
       musicStatus = false;
       musicToggle.setTexture('BM_5F');
       musicToggle.setScale(0.65);
     }
     else{
-      //menuSound.setMute(false);
+      menuSound.setMute(false);
       musicStatus = true;
       musicToggle.setTexture('BM_5N');
       musicToggle.setScale(0.65);
@@ -598,13 +594,13 @@ export class Menu extends Phaser.Scene {
 
     }).catch(error => {
 
-      //console.log(error.result);
+      console.log(error.result);
     });
   }
 
   challengersInfo(){
 
-    //this.preloadAnimation(360, 450, 0.6, 13, 'PRE_ANIM2');
+    this.preloadAnimation(360, 450, 0.8, 12, 'PRE_ANIM2');
     this.disableButtons();
 
     let urlParams = new URLSearchParams(window.location.search);
@@ -663,7 +659,7 @@ export class Menu extends Phaser.Scene {
         }
 
         availableButton = [challengeGate, challengerListSign, challengerGuideSign, challengerContract, musicToggle]
-        //preload.destroy();
+        preload.destroy();
         this.activateButtons();
       }
       else {
@@ -681,7 +677,7 @@ export class Menu extends Phaser.Scene {
 
     let startPosH = 385
     let startPosC = 685
-    //this.preloadAnimation(360, 690, 1.2, 8, 'PRE_ANIM1');
+    this.preloadAnimation(360, 720, 1.4, 8, 'PRE_ANIM1');
 
     fetch(urlData.apiLP_URL+"api/v1.0/leaderboard/leaderboard_imlek?limit_highscore=5&limit_total_score=5&linigame_platform_token="+gameToken, {
 
@@ -835,7 +831,7 @@ export class Menu extends Phaser.Scene {
       }
 
       leave.setInteractive()
-      //preload.destroy();
+      preload.destroy();
     }).catch(error => {
 
       //console.log(error);
