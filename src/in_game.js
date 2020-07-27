@@ -445,7 +445,7 @@ export class InGame extends Phaser.Scene {
       label: 'cargo',
       friction: 1,
       restitution: 0,
-    }).setScale(0.1).setDepth(1);
+    }).setScale(0.1).setDepth(1).setMass(10);
 
 
     cartwheelFront = this.matter.add.sprite(posX + 40, posY + 65, 'Roda_Test').setScale(0.35);
@@ -453,13 +453,13 @@ export class InGame extends Phaser.Scene {
       label: 'wheel',
       friction: 1,
       restitution: 0,
-    }).setMass(25);
+    }).setMass(50);
     cartwheelRear = this.matter.add.sprite(posX - 40, posY + 65, 'Roda_Test').setScale(0.35);
     cartwheelRear.setCircle(25, {
       label: 'wheel',
       friction: 1,
       restitution: 0,
-    }).setMass(10);
+    }).setMass(20);
     //console.log(rearWheel);
 
     this.matter.add.constraint(badanmobil, cartwheelFront, 40, 0, {
