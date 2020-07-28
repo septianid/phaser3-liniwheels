@@ -1,0 +1,41 @@
+{
+	"textures": [
+		{
+			"image": "Kart_Sheet.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 440,
+				"h": 351
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Kart.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 438,
+						"h": 349
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 438,
+						"h": 349
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 438,
+						"h": 349
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:a5703a074b77d54b8c6c646f38884e83:7cc719722d5bb641b602ef8530e61641:48e37bbbd392a84230aba6b9c90536bf$"
+	}
+}
