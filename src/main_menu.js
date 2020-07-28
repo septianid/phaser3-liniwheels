@@ -68,6 +68,7 @@ export class Menu extends Phaser.Scene {
     //   apiLP_URL: 'https://7f41949f7b4a.ngrok.io/',             //// DEVELOPMENT-LOCAL
     //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     // }
+
     gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
     this.challengersInfo();
 
