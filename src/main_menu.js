@@ -13,7 +13,7 @@ var closeSound;
 var poinPayOption;
 var adWatchPayOption;
 var availableButton = [];
-var gameToken
+var gameToken;
 var urlData = {}
 var location = {}
 var userData = {};
@@ -50,15 +50,15 @@ export class Menu extends Phaser.Scene {
 
   create(){
 
-    // urlData = {
-    //   apiLP_URL: 'https://linipoin-api.macroad.co.id/',    //// PRODUCTION
-    //   apiCPV_URL: 'https://captive.macroad.co.id/',
-    // }
-    //
     urlData = {
-      apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
-      apiCPV_URL: 'https://captive-dev.macroad.co.id/',
+      apiLP_URL: 'https://linipoin-api.macroad.co.id/',    //// PRODUCTION
+      apiCPV_URL: 'https://captive.macroad.co.id/',
     }
+    //
+    // urlData = {
+    //   apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
+    //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
+    // }
 
     // urlData = {
     //   apiLP_URL: 'https://7f41949f7b4a.ngrok.io/',             //// DEVELOPMENT-LOCAL
