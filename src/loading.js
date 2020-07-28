@@ -25,6 +25,14 @@ export class Loading extends Phaser.Scene{
   preload(){
     this.add.sprite(360, 640, 'LOADING_BG').setScale(0.68, 0.67);
     this.add.sprite(360, 230, 'TITLE').setScale(0.6);
+    this.load.spritesheet('PRE_ANIM1', './src/assets/PRE_ANIM1.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet('PRE_ANIM2', './src/assets/PRE_ANIM2.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
     this.load.image('MENU_BG', './src/assets/MENU_BG.jpg');
     this.load.image('TAP', './src/assets/TAP_SIGN.png');
     this.load.image('BM_1P', './src/assets/BM_1P.png');
@@ -73,6 +81,11 @@ export class Loading extends Phaser.Scene{
     this.load.atlas('Kart_Sheet','./src/assets/Kart_Sheet.png','./src/assets/Kart_Sheet.json');
 
     this.load.image('Roda_Test','./src/assets/roda3.png');
+
+    this.load.audio('MENU_SOUND', "./src/assets/sound/MENU_SOUND.mp3");
+    this.load.audio('CLICK_SOUND', "./src/assets/sound/CLICK_SOUND.mp3");
+    this.load.audio('CLOSE_SOUND', "./src/assets/sound/CLOSE_SOUND.mp3");
+    this.load.audio('POIN_COUNT', "./src/assets/sound/POIN_COUNT.mp3");
 
     //this.load.image('TestCar','./src/assets/MobilTest.png');
     //this.load.json('jsonMobil', './src/assets/Car.json');
@@ -128,7 +141,7 @@ export class Loading extends Phaser.Scene{
     });
 
     this.load.on('fileprogress', function (file) {
-      
+
     });
 
     this.load.on('complete', () => {

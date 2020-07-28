@@ -7,6 +7,9 @@ const config = {
   type: Phaser.CANVAS,
   parent: "game-page",
   backgroundColor: 0x75D5E3,
+  dom: {
+    createContainer: true
+  },
   physics: {
     default: 'matter',
     matter: {
