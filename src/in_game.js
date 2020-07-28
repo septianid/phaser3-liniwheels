@@ -53,10 +53,10 @@ var playLog = []
 var gameData = {}
 var executeOnce = {};
 var gameOption = {
-  timeConfig: 30,
-  mountainTotal : 3,
-  length: [150,350],
-  slopePerMountain: 6,
+  //timeConfig: 30,
+  mountainTotal : 10,
+  length: [100,300],
+  slopePerMountain: 5,
   startHeigthTerrain: 0.5,
   amplitude: 100,
   speed: 0.5,
@@ -90,6 +90,7 @@ export class InGame extends Phaser.Scene {
   }
 
   create(){
+    gameOption.timeConfig = 30
     tresholdValue = 0;
     valueScore = 0;
     staticTreshHold = 10;
@@ -102,11 +103,11 @@ export class InGame extends Phaser.Scene {
     terrainGraphics = [];
     checkpointSpawn = [];
     distanceTreshold = false;
-    startLine = new Phaser.Math.Vector2(-500, 300);
+    startLine = new Phaser.Math.Vector2(0, 0);
     //syaratspawn = 0;
     //berhenti = 0;
     for(let i = 0; i < gameOption.mountainTotal; i++){
-
+      //console.log(startLine);
       terrainGraphics[i] =  this.add.graphics();
       startLine = this.terrainGeneration(terrainGraphics[i], startLine);
     }
@@ -571,7 +572,15 @@ export class InGame extends Phaser.Scene {
 
     while(slopes < gameOption.slopePerMountain){
 
-      let interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x)/(slopeEnd.x - slopeStart.x));
+      //let interpolationVal
+      let interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x)/(slopeEnd.x - slopeStart.x))
+      //console.log((pointX - slopeStart.x)/(slopeEnd.x - slopeStart.x));
+      // if(valueScore <= 1){
+      //   interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x)/(slopeEnd.x - slopeStart.x));
+      // }
+      // else {
+      //   interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x)/(slopeEnd.x - slopeStart.x));
+      // }
 
       if(pointX == slopeEnd.x){
 
@@ -585,6 +594,7 @@ export class InGame extends Phaser.Scene {
         //slopeLength = Phaser.Math.Between(gameOption.length[0], gameOption.length[1]);
         slopeEnd = new Phaser.Math.Vector2(slopeEnd.x + Phaser.Math.Between(gameOption.length[0], gameOption.length[1]), Math.random());
         interpolationVal = slopeStart.y;
+        //console.log(interpolationVal);
       }
 
       // else {

@@ -54,7 +54,7 @@ export class Menu extends Phaser.Scene {
       apiLP_URL: 'https://linipoin-api.macroad.co.id/',    //// PRODUCTION
       apiCPV_URL: 'https://captive.macroad.co.id/',
     }
-    //
+
     // urlData = {
     //   apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
     //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
