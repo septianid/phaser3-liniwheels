@@ -114,7 +114,7 @@ export class InGame extends Phaser.Scene {
 
     isMoving = false;
 
-    this.generatePlayercar(200, 400);
+    this.generatePlayercar(200, 500);
 
     // var carJson = this.cache.json.get('car')
     // var mobil = this.matter.add.sprite(360, 640,'car_sheet', 'MobilTest.png', {

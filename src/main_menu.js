@@ -13,7 +13,7 @@ var closeSound;
 var poinPayOption;
 var adWatchPayOption;
 var availableButton = [];
-var gameToken
+var gameToken;
 var urlData = {}
 var location = {}
 var userData = {};
@@ -54,7 +54,7 @@ export class Menu extends Phaser.Scene {
       apiLP_URL: 'https://linipoin-api.macroad.co.id/',    //// PRODUCTION
       apiCPV_URL: 'https://captive.macroad.co.id/',
     }
-
+    //
     // urlData = {
     //   apiLP_URL: 'https://linipoin-dev.macroad.co.id/',    //// DEVELOPMENT
     //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
@@ -64,6 +64,7 @@ export class Menu extends Phaser.Scene {
     //   apiLP_URL: 'https://7f41949f7b4a.ngrok.io/',             //// DEVELOPMENT-LOCAL
     //   apiCPV_URL: 'https://captive-dev.macroad.co.id/',
     // }
+
     gameToken = '42ed1181c847a3a768fb93f5beaa55570236e3ae'
     this.challengersInfo();
 
@@ -406,10 +407,10 @@ export class Menu extends Phaser.Scene {
       "    melihat tayangan iklan atau",
       "    dapat menukarkan 10 poin dari",
       "    LINIPOIN",
-      "3. Pemain yang berhasil meletakkan",
-      "    kotak pada tempat yg disediakan",
+      "3. Pemain yang berhasil mempertahankan",
+      "    kotak pada tempat yang disediakan",
       "    akan mendapatkan poin berdasarkan" ,
-      "    tingkatan tumpukan kotak",
+      "    jarak yang berhasil ditempuh",
       "4. Poin yang didapat dari setiap akhir",
       "    permainan akan langsung",
       "    ditambahkan ke akumulasi poin",
